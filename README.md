@@ -10,6 +10,8 @@ IggyAPI is a FastAPI-based application designed to search, retrieve, and manage 
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Running IggyAPI](#running-iggyapi)
+- [Build the Docker Image](#build-the-docker-image)
+- [Run the Docker Container](#run-the-docker-container)
 - [API Endpoints](#api-endpoints)
   - [Search Implementation Guides](#search-implementation-guides)
   - [List Profiles in an IG](#list-profiles-in-an-ig)
@@ -17,9 +19,6 @@ IggyAPI is a FastAPI-based application designed to search, retrieve, and manage 
   - [Get Refresh Status](#get-refresh-status)
   - [Force Cache Refresh](#force-cache-refresh)
 - [Response Samples](#response-samples)
-  - [Search Implementation Guides Response](#search-implementation-guides-response)
-  - [List Profiles Response](#list-profiles-response)
-  - [Get Profile Response](#get-profile-response)
 - [Testing IggyAPI](#testing-iggyapi)
 - [Implementation Details](#implementation-details)
 - [Contributing](#contributing)
@@ -33,10 +32,10 @@ While IggyAPI is particularly focused on supporting AU Core profiles (e.g., `hl7
 
 ## Features
 
-- **Search IGs**: Query Implementation Guides using a search term with fuzzy matching.
+- **Search IGs**: Query Implementation Guides using a search term with semantic or string similarity matching.
 - **List Profiles**: Retrieve a list of StructureDefinitions (profiles) within a specified IG, with optional version filtering.
 - **Fetch Profiles**: Obtain a specific StructureDefinition by IG and profile ID, with an option to exclude narrative content.
-- **Cache Management**: Automatically syncs IG metadata from registries every 4 hours or on demand, with status reporting.
+- **Cache Management**: Automatically syncs IG metadata from registries every 8 hours or on demand, with status reporting.
 - **Robust Error Handling**: Provides detailed error messages for invalid requests or unavailable resources.
 - **Swagger UI**: Offers an interactive API documentation interface at `/docs`.
 
@@ -48,6 +47,8 @@ Before setting up IggyAPI, ensure you have the following installed:
 - **pip**: Python package manager for installing dependencies.
 - **SQLite**: Used for caching (included with Python).
 - **Git**: For cloning the repository (optional).
+- **Docker**: Required for running IggyAPI in a container.
+- **SpaCy Model**: IggyAPI uses SpaCy for advanced search functionality, requiring the `en_core_web_md` model for semantic similarity searches.
 
 An internet connection is required to fetch IG metadata from FHIR registries during the initial sync.
 
@@ -59,13 +60,13 @@ An internet connection is required to fetch IG metadata from FHIR registries dur
    cd iggyapi
    ```
 
-2. **Create a Virtual Environment** (recommended):
+2. **Create a Virtual Environment** (recommended for non-Docker setup):
    ```bash
    python -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
 
-3. **Install Dependencies**:
+3. **Install Dependencies** (for non-Docker setup):
    IggyAPI requires several Python packages listed in `requirements.txt`. Install them using:
    ```bash
    pip install -r requirements.txt
@@ -79,37 +80,27 @@ An internet connection is required to fetch IG metadata from FHIR registries dur
    sqlalchemy==2.0.35
    tenacity==9.0.0
    rapidfuzz==3.10.0
+   spacy==3.7.6
+   en-core-web-md @ https://github.com/explosion/spacy-models/releases/download/en_core_web_md-3.7.1/en_core_web_md-3.7.1-py3-none-any.whl
    ```
 
-4. **Verify Setup**:
+4. **Verify Setup** (for non-Docker setup):
    Ensure all dependencies are installed by running:
    ```bash
    pip list
    ```
-   Confirm that `fastapi`, `uvicorn`, `requests`, `sqlalchemy`, and other required packages are listed.
+   Confirm that `fastapi`, `uvicorn`, `requests`, `sqlalchemy`, `spacy`, and other required packages are listed.
 
-##Build the Docker Image
-
-Ensure you are in the project directory where the Dockerfile is located. Build the Docker image using:
-```bash 
-  docker build -t iggyapi:latest .
-```
-This creates an image named iggyapi with the latest tag.
-
-##Run the Docker Container
-
-Start a container from the built image, mapping port 8000 on your host to port 8000 in the container:
-```bash
-  docker run -d -p 8000:8000 -e PORT=8000 -v C:/git/IggyApi/instance:/app/instance iggyapi:latest
-```
-Verify the Container is Running:Check the status of the container:
-docker ps
-
-You should see iggyapi-container listed as running.
+5. **Verify SpaCy Model** (for non-Docker setup):
+   Confirm that the SpaCy model is installed by running:
+   ```bash
+   python -m spacy validate
+   ```
+   You should see `en_core_web_md` listed as installed. If not, ensure the model was downloaded correctly via the `requirements.txt` installation.
 
 ## Running IggyAPI
 
-1. **Start the Server**:
+1. **Start the Server** (for non-Docker setup):
    Launch IggyAPI using `uvicorn`:
    ```bash
    uvicorn main:app --host 0.0.0.0 --port 8000
@@ -121,8 +112,33 @@ You should see iggyapi-container listed as running.
    - Open your browser and navigate to `http://localhost:8000/docs` to access the Swagger UI.
    - The Swagger UI provides an interactive interface to test IggyAPI’s endpoints.
 
-3. **Initial Sync**:
-   On first run, IggyAPI will sync IG metadata from FHIR registries. This process may take a few minutes depending on your internet connection. Subsequent syncs occur every 4 hours or can be triggered manually via the `/refresh-cache` endpoint.
+3. **Initial Sync and Scheduled Refreshes**:
+   On startup, IggyAPI will load any existing data from the database into memory, even if it’s older than 8 hours. If the data is older than 8 hours or missing, a background refresh will be triggered to fetch the latest IG metadata from FHIR registries. This process may take a few minutes depending on your internet connection. After the initial refresh, IggyAPI schedules automatic refreshes every 8 hours from the last refresh time (whether triggered at startup, in the background, or manually via the `/refresh-cache` endpoint). You can also trigger a manual refresh at any time using the `/refresh-cache` endpoint.
+
+## Build the Docker Image
+
+Ensure you are in the project directory where the `Dockerfile` is located. Build the Docker image using:
+```bash 
+docker build -t iggyapi:latest .
+```
+This creates an image named `iggyapi` with the `latest` tag. Optionally, you can add a `--name iggyapi-container` flag during the run step to name the container for easier reference.
+
+## Run the Docker Container
+
+Start a container from the built image, mapping port 8000 on your host to port 8000 in the container:
+```bash
+docker run -d -p 8000:8000 -e PORT=8000 -v C:/git/IggyApi/instance:/app/instance --name iggyapi-container iggyapi:latest
+```
+
+**Verify the Container is Running**:
+Check the status of the container:
+```bash
+docker ps
+```
+You should see `iggyapi-container` listed as running.
+
+**Initial Sync and Scheduled Refreshes**:
+On startup, IggyAPI will load any existing data from the database into memory, even if it’s older than 8 hours. If the data is older than 8 hours or missing, a background refresh will be triggered to fetch the latest IG metadata from FHIR registries. This process may take a few minutes depending on your internet connection. After the initial refresh, IggyAPI schedules automatic refreshes every 8 hours from the last refresh time (whether triggered at startup, in the background, or manually via the `/refresh-cache` endpoint). You can also trigger a manual refresh at any time using the `/refresh-cache` endpoint.
 
 ## API Endpoints
 
@@ -131,9 +147,12 @@ IggyAPI provides the following endpoints, all documented in the Swagger UI at `/
 ### Search Implementation Guides
 
 - **Endpoint**: `GET /igs/search`
-- **Query Parameter**:
+- **Query Parameters**:
   - `query` (string, optional): A search term to filter IGs by name or author (e.g., `au core`).
-- **Description**: Searches for FHIR Implementation Guides using fuzzy matching on package name and author. Returns a list of matching IGs with metadata such as version, FHIR version, and relevance score.
+  - `search_type` (string, optional, default: `semantic`): The type of search to perform. Options are:
+    - `semantic`: Uses SpaCy for semantic similarity, matching based on the meaning of the query and package metadata. If the semantic similarity is low, it falls back to rapidfuzz for string-based matching.
+    - `string`: Uses SpaCy for token-based string similarity, with a fallback to rapidfuzz for exact or near-exact string matching.
+- **Description**: Searches for FHIR Implementation Guides using either semantic or string similarity matching. The search first filters packages by ensuring all words in the query are present in the package name or author, then applies the specified similarity search on the filtered results. Returns a list of matching IGs with metadata such as version, FHIR version, and relevance score.
 - **Response**: A JSON object containing a list of IGs, total count, and cache status.
 
 ### List Profiles in an IG
@@ -167,7 +186,7 @@ IggyAPI provides the following endpoints, all documented in the Swagger UI at `/
 ### Force Cache Refresh
 
 - **Endpoint**: `POST /refresh-cache`
-- **Description**: Forces an immediate refresh of the IG metadata cache by re-syncing with FHIR registries.
+- **Description**: Forces an immediate refresh of the IG metadata cache by re-syncing with FHIR registries. This also resets the scheduled refresh timer to 8 hours from the time of the manual refresh.
 - **Response**: A JSON object with the updated refresh status.
 
 ## Response Samples
@@ -384,7 +403,7 @@ You can test IggyAPI using `curl`, Postman, or the Swagger UI.
 
 1. **Search for IGs**:
    ```bash
-   curl -X GET "http://localhost:8000/igs/search?query=au%20core" -H "accept: application/json"
+   curl -X GET "http://localhost:8000/igs/search?query=au%20core&search_type=semantic" -H "accept: application/json"
    ```
    Look for `hl7.fhir.au.core` in the response.
 
@@ -428,13 +447,15 @@ You can test IggyAPI using `curl`, Postman, or the Swagger UI.
 - **Database**: Uses SQLite to cache IG metadata, with tables `cached_packages` and `registry_cache_info`.
 - **Caching**:
   - IG metadata is cached in memory and persisted to SQLite.
-  - The cache is refreshed every 4 hours or on demand via `/refresh-cache`.
+  - The cache is refreshed every 8 hours or on demand via `/refresh-cache`.
   - Profiles are cached in memory to reduce redundant downloads.
+- **Search Functionality**: Uses SpaCy for semantic and string similarity matching, with rapidfuzz as a fallback for string searches.
 - **Narrative Stripping**: The `include_narrative` parameter in the `get_profile` endpoint removes the `text` element from StructureDefinitions when set to `false`.
 - **Dependencies**:
   - `requests` and `feedparser` for fetching IG metadata from registries.
   - `sqlalchemy` for database operations.
   - `rapidfuzz` for fuzzy search functionality.
+  - `spacy` for semantic and string similarity searches.
   - `tenacity` for retrying failed registry requests.
 - **Error Handling**:
   - Returns HTTP 400 for invalid input (e.g., malformed IG names).

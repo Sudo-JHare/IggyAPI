@@ -8,3 +8,5 @@ sqlalchemy==2.0.35
 packaging==24.1
 apscheduler==3.10.4
 tenacity==8.5.0
+spacy==3.7.6
+en-core-web-md @ https://github.com/explosion/spacy-models/releases/download/en_core_web_md-3.7.1/en_core_web_md-3.7.1-py3-none-any.whl

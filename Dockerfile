@@ -10,6 +10,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
 COPY main.py .
+COPY core.py .
 
 # Create instance directory for SQLite
 RUN mkdir -p /app/instance
@@ -21,5 +22,8 @@ RUN chmod -R 777 /app/instance
 ENV PORT=8000
 EXPOSE $PORT
 
-# Run the application
-CMD ["python", "main.py"]
+# Set Uvicorn log level for debugging
+ENV UVICORN_LOG_LEVEL=debug
+
+# Run the application using Uvicorn
+CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port $PORT --log-level $UVICORN_LOG_LEVEL"]

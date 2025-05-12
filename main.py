@@ -2,63 +2,39 @@ from fastapi import FastAPI, HTTPException
 from contextlib import asynccontextmanager
 from pydantic import BaseModel
 from typing import List, Optional, Dict
-import feedparser
-import requests
-import json
-import os
+import spacy
+from rapidfuzz import fuzz
 import logging
-from sqlalchemy import create_engine, Column, String, Integer, JSON, DateTime, text
-from sqlalchemy.orm import declarative_base, sessionmaker
-from datetime import datetime, timedelta, timezone
-from tenacity import retry, stop_after_attempt, wait_fixed
 import re
 import tarfile
-import io
-from rapidfuzz import process, fuzz
-from collections import defaultdict
+import json
+from datetime import datetime, timedelta
+import asyncio
 
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+# Import from core
+from core import (
+    SessionLocal, CachedPackage, RegistryCacheInfo,
+    refresh_status, app_config, sync_packages,
+    should_sync_packages, download_package,
+    logger, FHIR_REGISTRY_BASE_URL
+)
 
-# FastAPI app with lifespan handler
-app = FastAPI(title="FHIR IG API", description="API for searching and retrieving FHIR Implementation Guides and StructureDefinitions")
+# Configure logging to capture more details
+logging.getLogger().setLevel(logging.DEBUG)  # Set root logger to DEBUG
+logging.getLogger("uvicorn").setLevel(logging.DEBUG)  # Ensure uvicorn logs are captured
+logging.getLogger("uvicorn.access").setLevel(logging.DEBUG)  # Capture access logs
 
-# SQLite Database Setup with increased timeout
-Base = declarative_base()
-DATABASE_URL = "sqlite:///instance/fhir_igs.db?timeout=60"  # Increase timeout to 60 seconds
-os.makedirs("instance", exist_ok=True)
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+# Load SpaCy model
+try:
+    nlp = spacy.load("en_core_web_md")
+    logger.info("SpaCy model 'en_core_web_md' loaded successfully.")
+except Exception as e:
+    logger.error(f"Failed to load SpaCy model: {str(e)}")
+    raise RuntimeError("SpaCy model 'en_core_web_md' is required for search functionality. Please install it.")
 
-with engine.connect() as connection:
-    connection.execute(text("PRAGMA journal_mode=WAL;"))
-    connection.execute(text("PRAGMA busy_timeout=60000;"))
-    logger.info("Enabled WAL mode and set busy timeout for SQLite")
-
-# Database Models
-class CachedPackage(Base):
-    __tablename__ = "cached_packages"
-    package_name = Column(String, primary_key=True)
-    version = Column(String)
-    latest_official_version = Column(String)
-    author = Column(String)
-    description = Column(String)
-    fhir_version = Column(String)
-    url = Column(String)
-    canonical = Column(String)
-    all_versions = Column(JSON)
-    dependencies = Column(JSON)
-    version_count = Column(Integer)
-    last_updated = Column(String)
-    latest_version = Column(String)
-
-class RegistryCacheInfo(Base):
-    __tablename__ = "registry_cache_info"
-    id = Column(Integer, primary_key=True)
-    last_fetch_timestamp = Column(DateTime(timezone=True), nullable=True)
-
-Base.metadata.create_all(bind=engine)
+# FastAPI app
+app = FastAPI(title="IggyAPI", description="API for searching and retrieving FHIR Implementation Guides and StructureDefinitions")
+logger.debug("FastAPI app initialized.")
 
 # Pydantic Models for Responses
 class VersionEntry(BaseModel):
@@ -98,487 +74,111 @@ class RefreshStatus(BaseModel):
     package_count: int
     errors: List[str]
 
-# Global variables
-refresh_status = {
-    "last_refresh": None,
-    "errors": []
-}
+# Global variable to track the last refresh time
+last_refresh_time = datetime.utcnow()
 
-app_config = {
-    "MANUAL_PACKAGE_CACHE": None,
-    "MANUAL_CACHE_TIMESTAMP": None,
-    "FETCH_IN_PROGRESS": False,
-    "PROFILE_CACHE": {}  # Cache for profiles: {ig_name#version: [ProfileMetadata]}
-}
-
-# Constants from FHIRFLARE
-FHIR_REGISTRY_BASE_URL = "https://packages.fhir.org"
-
-def safe_parse_version(v_str):
-    """Parse version strings, handling FHIR-specific suffixes."""
-    if not v_str or not isinstance(v_str, str):
-        return "0.0.0a0"
-    v_str_norm = v_str.lower()
-    base_part = v_str_norm.split('-', 1)[0] if '-' in v_str_norm else v_str_norm
-    suffix = v_str_norm.split('-', 1)[1] if '-' in v_str_norm else None
-    if re.match(r'^\d+(\.\d+)*$', base_part):
-        if suffix in ['dev', 'snapshot', 'ci-build', 'snapshot1', 'snapshot3', 'draft-final']:
-            return f"{base_part}a0"
-        elif suffix in ['draft', 'ballot', 'preview', 'ballot2']:
-            return f"{base_part}b0"
-        elif suffix and suffix.startswith('rc'):
-            return f"{base_part}rc{''.join(filter(str.isdigit, suffix)) or '0'}"
-        return base_part
-    return "0.0.0a0"
-
-def compare_versions(v1, v2):
-    """Compare two version strings, handling FHIR-specific formats."""
-    v1_parts = v1.split('.')
-    v2_parts = v2.split('.')
-    for i in range(max(len(v1_parts), len(v2_parts))):
-        p1 = v1_parts[i] if i < len(v1_parts) else '0'
-        p2 = v2_parts[i] if i < len(v2_parts) else '0'
-        p1_num, p1_suffix = re.match(r'(\d+)([a-zA-Z0-9]*)$', p1).groups() if re.match(r'^\d+[a-zA-Z0-9]*$', p1) else (p1, '')
-        p2_num, p2_suffix = re.match(r'(\d+)([a-zA-Z0-9]*)$', p2).groups() if re.match(r'^\d+[a-zA-Z0-9]*$', p2) else (p2, '')
-        if int(p1_num) != int(p2_num):
-            return int(p1_num) > int(p2_num)
-        if p1_suffix != p2_suffix:
-            if not p1_suffix:
-                return True
-            if not p2_suffix:
-                return False
-            return p1_suffix > p2_suffix
-    return False
-
-def get_additional_registries():
-    """Fetch additional FHIR IG registries from the master feed."""
-    feed_registry_url = 'https://raw.githubusercontent.com/FHIR/ig-registry/master/package-feeds.json'
-    feeds = []
+async def background_cache_refresh(db):
+    """Run a cache refresh and update in-memory cache and database upon completion."""
+    global last_refresh_time
+    logger.info("Starting background cache refresh")
     try:
-        response = requests.get(feed_registry_url, timeout=15)
-        response.raise_for_status()
-        data = json.loads(response.text)
-        feeds = [{'name': feed['name'], 'url': feed['url']} for feed in data.get('feeds', []) if 'name' in feed and 'url' in feed and feed['url'].startswith(('http://', 'https://'))]
-        feeds = [feed for feed in feeds if feed['url'] != 'https://fhir.kl.dk/package-feed.xml']
-        logger.info(f"Fetched {len(feeds)} registries from {feed_registry_url}")
+        sync_packages()  # This updates app_config["MANUAL_PACKAGE_CACHE"] and the database
+        last_refresh_time = datetime.utcnow()  # Update the last refresh time
+        logger.info(f"Background cache refresh completed successfully at {last_refresh_time.isoformat()}")
     except Exception as e:
-        logger.error(f"Failed to fetch registries: {str(e)}")
-        refresh_status["errors"].append(f"Failed to fetch registries from {feed_registry_url}: {str(e)}")
-    return feeds
-
-@retry(stop=stop_after_attempt(3), wait=wait_fixed(5))
-def fetch_feed(feed):
-    """Fetch and parse a single feed, handling both JSON and RSS/Atom."""
-    logger.info(f"Fetching feed: {feed['name']} from {feed['url']}")
-    entries = []
-    try:
-        response = requests.get(feed['url'], timeout=30)
-        response.raise_for_status()
-        content_type = response.headers.get('content-type', '').lower()
-        logger.debug(f"Response content-type: {content_type}, content: {response.text[:200]}")
-
-        if 'application/json' in content_type or feed['url'].endswith('.json'):
-            try:
-                data = response.json()
-                packages = data.get('packages', data.get('entries', []))
-                for pkg in packages:
-                    if not isinstance(pkg, dict):
-                        continue
-                    versions = pkg.get('versions', [])
-                    if versions:
-                        entries.append(pkg)
-                    else:
-                        pkg['versions'] = [{"version": pkg.get('version', ''), "pubDate": pkg.get('pubDate', 'NA')}]
-                        entries.append(pkg)
-                logger.info(f"Fetched {len(entries)} packages from JSON feed {feed['name']}")
-            except json.JSONDecodeError as e:
-                logger.error(f"JSON parse error for {feed['name']}: {str(e)}")
-                refresh_status["errors"].append(f"JSON parse error for {feed['name']} at {feed['url']}: {str(e)}")
-                raise
-        elif 'xml' in content_type or 'rss' in content_type or 'atom' in content_type or feed['url'].endswith(('.rss', '.atom', '.xml')) or 'text/plain' in content_type:
-            try:
-                feed_data = feedparser.parse(response.text)
-                if not feed_data.entries:
-                    logger.warning(f"No entries found in feed {feed['name']}")
-                for entry in feed_data.entries:
-                    title = entry.get('title', '')
-                    pkg_name = ''
-                    version = ''
-                    if '#' in title:
-                        pkg_name, version = title.split('#', 1)
-                    else:
-                        pkg_name = title
-                        version = entry.get('version', '')
-                    if not pkg_name:
-                        pkg_name = entry.get('id', '') or entry.get('summary', '')
-                    if not pkg_name:
-                        continue
-                    package = {
-                        'name': pkg_name,
-                        'version': version,
-                        'author': entry.get('author', 'NA'),
-                        'fhirVersion': entry.get('fhir_version', ['NA'])[0] or 'NA',
-                        'url': entry.get('link', 'unknown'),
-                        'canonical': entry.get('canonical', ''),
-                        'dependencies': entry.get('dependencies', []),
-                        'pubDate': entry.get('published', entry.get('pubdate', 'NA')),
-                        'registry': feed['url'],
-                        'versions': [{"version": version, "pubDate": entry.get('published', entry.get('pubdate', 'NA'))}]
-                    }
-                    entries.append(package)
-                logger.info(f"Fetched {len(entries)} entries from RSS/Atom feed {feed['name']}")
-            except Exception as e:
-                logger.error(f"RSS/Atom parse error for {feed['name']}: {str(e)}")
-                refresh_status["errors"].append(f"RSS/Atom parse error for {feed['name']} at {feed['url']}: {str(e)}")
-                raise
-        else:
-            logger.error(f"Unknown content type for {feed['name']}: {content_type}")
-            refresh_status["errors"].append(f"Unknown content type for {feed['name']} at {feed['url']}: {content_type}")
-            raise ValueError(f"Unknown content type: {content_type}")
-
-        return entries
-    except requests.RequestException as e:
-        logger.error(f"Request error for {feed['name']}: {str(e)}")
-        refresh_status["errors"].append(f"Request error for {feed['name']} at {feed['url']}: {str(e)}")
-        raise
-    except Exception as e:
-        logger.error(f"Unexpected error for {feed['name']}: {str(e)}")
-        refresh_status["errors"].append(f"Unexpected error for {feed['name']} at {feed['url']}: {str(e)}")
-        raise
-
-def normalize_package_data(entries, registry_url):
-    """Normalize package data, grouping by name and aggregating versions."""
-    logger.info("Starting normalization of package data")
-    packages_grouped = defaultdict(list)
-    skipped_raw_count = 0
-    for entry in entries:
-        if not isinstance(entry, dict):
-            skipped_raw_count += 1
-            logger.warning(f"Skipping raw package entry, not a dict: {entry}")
-            continue
-        raw_name = entry.get('name') or entry.get('title') or ''
-        if not isinstance(raw_name, str):
-            raw_name = str(raw_name)
-        name_part = raw_name.split('#', 1)[0].strip().lower()
-        if name_part:
-            packages_grouped[name_part].append(entry)
-        else:
-            if not entry.get('id'):
-                skipped_raw_count += 1
-                logger.warning(f"Skipping raw package entry, no name or id: {entry}")
-    logger.info(f"Initial grouping: {len(packages_grouped)} unique package names found. Skipped {skipped_raw_count} raw entries.")
-
-    normalized_list = []
-    skipped_norm_count = 0
-    total_entries_considered = 0
-
-    for name_key, entries in packages_grouped.items():
-        total_entries_considered += len(entries)
-        latest_absolute_data = None
-        latest_official_data = None
-        latest_absolute_ver = "0.0.0a0"
-        latest_official_ver = "0.0.0a0"
-        all_versions = []
-        package_name_display = name_key
-
-        processed_versions = set()
-        for package_entry in entries:
-            versions_list = package_entry.get('versions', [])
-            for version_info in versions_list:
-                if isinstance(version_info, dict) and 'version' in version_info:
-                    version_str = version_info.get('version', '')
-                    if version_str and version_str not in processed_versions:
-                        all_versions.append({
-                            "version": version_str,
-                            "pubDate": version_info.get('pubDate', 'NA')
-                        })
-                        processed_versions.add(version_str)
-
-        processed_entries = []
-        for package_entry in entries:
-            version_str = None
-            raw_name_entry = package_entry.get('name') or package_entry.get('title') or ''
-            if not isinstance(raw_name_entry, str):
-                raw_name_entry = str(raw_name_entry)
-            version_keys = ['version', 'latestVersion']
-            for key in version_keys:
-                val = package_entry.get(key)
-                if isinstance(val, str) and val:
-                    version_str = val.strip()
-                    break
-                elif isinstance(val, list) and val and isinstance(val[0], str) and val[0]:
-                    version_str = val[0].strip()
-                    break
-            if not version_str and '#' in raw_name_entry:
-                parts = raw_name_entry.split('#', 1)
-                if len(parts) == 2 and parts[1]:
-                    version_str = parts[1].strip()
-
-            if not version_str:
-                logger.warning(f"Skipping entry for {raw_name_entry}: no valid version found. Entry: {package_entry}")
-                skipped_norm_count += 1
-                continue
-
-            version_str = version_str.strip()
-            current_display_name = str(raw_name_entry).split('#')[0].strip()
-            if current_display_name and current_display_name != name_key:
-                package_name_display = current_display_name
-
-            entry_with_version = package_entry.copy()
-            entry_with_version['version'] = version_str
-            processed_entries.append(entry_with_version)
-
-            try:
-                current_ver = safe_parse_version(version_str)
-                if latest_absolute_data is None or compare_versions(current_ver, latest_absolute_ver):
-                    latest_absolute_ver = current_ver
-                    latest_absolute_data = entry_with_version
-
-                if re.match(r'^\d+\.\d+\.\d+(?:-[a-zA-Z0-9\.]+)?$', version_str):
-                    if latest_official_data is None or compare_versions(current_ver, latest_official_ver):
-                        latest_official_ver = current_ver
-                        latest_official_data = entry_with_version
-            except Exception as comp_err:
-                logger.error(f"Error comparing version '{version_str}' for package '{package_name_display}': {comp_err}", exc_info=True)
-
-        if latest_absolute_data:
-            final_absolute_version = latest_absolute_data.get('version', 'unknown')
-            final_official_version = latest_official_data.get('version') if latest_official_data else None
-
-            author_raw = latest_absolute_data.get('author') or latest_absolute_data.get('publisher') or 'NA'
-            if isinstance(author_raw, dict):
-                author = author_raw.get('name', str(author_raw))
-            elif not isinstance(author_raw, str):
-                author = str(author_raw)
-            else:
-                author = author_raw
-
-            fhir_version_str = 'NA'
-            fhir_keys = ['fhirVersion', 'fhirVersions', 'fhir_version']
-            for key in fhir_keys:
-                val = latest_absolute_data.get(key)
-                if isinstance(val, list) and val and isinstance(val[0], str):
-                    fhir_version_str = val[0]
-                    break
-                elif isinstance(val, str) and val:
-                    fhir_version_str = val
-                    break
-
-            url_raw = latest_absolute_data.get('url') or latest_absolute_data.get('link') or 'unknown'
-            url = str(url_raw) if not isinstance(url_raw, str) else url_raw
-            canonical_raw = latest_absolute_data.get('canonical') or url
-            canonical = str(canonical_raw) if not isinstance(canonical_raw, str) else canonical_raw
-
-            dependencies_raw = latest_absolute_data.get('dependencies', [])
-            dependencies = []
-            if isinstance(dependencies_raw, dict):
-                dependencies = [{"name": str(dn), "version": str(dv)} for dn, dv in dependencies_raw.items()]
-            elif isinstance(dependencies_raw, list):
-                for dep in dependencies_raw:
-                    if isinstance(dep, str):
-                        if '@' in dep:
-                            dep_name, dep_version = dep.split('@', 1)
-                            dependencies.append({"name": dep_name, "version": dep_version})
-                        else:
-                            dependencies.append({"name": dep, "version": "N/A"})
-                    elif isinstance(dep, dict) and 'name' in dep and 'version' in dep:
-                        dependencies.append(dep)
-
-            all_versions.sort(key=lambda x: x.get('pubDate', ''), reverse=True)
-            latest_version = final_official_version or final_absolute_version or 'N/A'
-
-            normalized_entry = {
-                "package_name": package_name_display,
-                "version": final_absolute_version,
-                "latest_official_version": final_official_version,
-                "author": author.strip(),
-                "description": "",
-                "fhir_version": fhir_version_str.strip(),
-                "url": url.strip(),
-                "canonical": canonical.strip(),
-                "all_versions": all_versions,
-                "dependencies": dependencies,
-                "version_count": len(all_versions),
-                "last_updated": datetime.utcnow().isoformat(),
-                "latest_version": latest_version
-            }
-            normalized_list.append(normalized_entry)
-            if not final_official_version:
-                logger.warning(f"No official version found for package '{package_name_display}'. Versions: {[v['version'] for v in all_versions]}")
-        else:
-            logger.warning(f"No valid entries found to determine details for package name key '{name_key}'. Entries: {entries}")
-            skipped_norm_count += len(entries)
-
-    logger.info(f"Normalization complete. Entries considered: {total_entries_considered}, Skipped during norm: {skipped_norm_count}, Unique Packages Found: {len(normalized_list)}")
-    normalized_list.sort(key=lambda x: x.get('package_name', '').lower())
-    return normalized_list
-
-def cache_packages(normalized_packages, db_session):
-    """Cache normalized FHIR Implementation Guide packages in the CachedPackage database."""
-    logger.info("Starting to cache packages")
-    try:
-        batch_size = 10
-        for i in range(0, len(normalized_packages), batch_size):
-            batch = normalized_packages[i:i + batch_size]
-            logger.info(f"Processing batch {i//batch_size + 1} with {len(batch)} packages")
-            for package in batch:
-                existing = db_session.query(CachedPackage).filter_by(package_name=package['package_name']).first()
-                if existing:
-                    existing.version = package['version']
-                    existing.latest_official_version = package['latest_official_version']
-                    existing.author = package['author']
-                    existing.description = package['description']
-                    existing.fhir_version = package['fhir_version']
-                    existing.url = package['url']
-                    existing.canonical = package['canonical']
-                    existing.all_versions = package['all_versions']
-                    existing.dependencies = package['dependencies']
-                    existing.version_count = package['version_count']
-                    existing.last_updated = package['last_updated']
-                    existing.latest_version = package['latest_version']
-                else:
-                    new_package = CachedPackage(**package)
-                    db_session.add(new_package)
-            db_session.commit()
-            logger.info(f"Cached {len(batch)} packages in batch {i//batch_size + 1}")
-        logger.info(f"Successfully cached {len(normalized_packages)} packages in CachedPackage.")
-    except Exception as error:
-        db_session.rollback()
-        logger.error(f"Error caching packages: {error}")
-        refresh_status["errors"].append(f"Error caching packages: {str(error)}")
-        raise
-    logger.info("Finished caching packages")
-
-def should_sync_packages(db_session):
-    """Check if the database is empty or data is older than 4 hours."""
-    logger.info("Checking if sync is needed")
-    try:
-        package_count = db_session.query(CachedPackage).count()
-        if package_count == 0:
-            logger.info("Database is empty, triggering sync")
-            return True
-
-        latest_package = db_session.query(CachedPackage).order_by(CachedPackage.last_updated.desc()).first()
-        if not latest_package or not latest_package.last_updated:
-            logger.info("No valid last_updated timestamp, triggering sync")
-            return True
-
-        try:
-            last_updated = datetime.fromisoformat(latest_package.last_updated.replace('Z', '+00:00'))
-            time_diff = datetime.utcnow() - last_updated
-            if time_diff.total_seconds() > 4 * 3600:
-                logger.info(f"Data is {time_diff.total_seconds()/3600:.2f} hours old, triggering sync")
-                return True
-            else:
-                logger.info(f"Data is {time_diff.total_seconds()/3600:.2f} hours old, using current dataset")
-                return False
-        except ValueError:
-            logger.warning("Invalid last_updated format, triggering sync")
-            return True
-    except Exception as e:
-        logger.error(f"Error checking sync status: {str(e)}")
-        return True
-
-def sync_packages():
-    """Syndicate package metadata from RSS feeds and package registries."""
-    logger.info("Starting RSS feed refresh")
-    global refresh_status, app_config
-    refresh_status["errors"] = []
-    temp_packages = []
-    app_config["FETCH_IN_PROGRESS"] = True
-
-    db = SessionLocal()
-    try:
-        registries = get_additional_registries()
-        if not registries:
-            logger.error("No registries fetched. Cannot proceed with package syndication.")
-            refresh_status["errors"].append("No registries fetched. Syndication aborted.")
-            app_config["FETCH_IN_PROGRESS"] = False
-            return
-
-        for feed in registries:
-            if not feed['url'].startswith(('http://', 'https://')):
-                logger.warning(f"Skipping invalid feed URL: {feed['url']}")
-                continue
-            try:
-                entries = fetch_feed(feed)
-                normalized_packages = normalize_package_data(entries, feed["url"])
-                temp_packages.extend(normalized_packages)
-            except Exception as e:
-                logger.error(f"Failed to process feed {feed['name']}: {str(e)}")
-                refresh_status["errors"].append(f"Failed to process feed {feed['name']}: {str(e)}")
-
-        now_ts = datetime.utcnow().isoformat()
-        app_config["MANUAL_PACKAGE_CACHE"] = temp_packages
-        app_config["MANUAL_CACHE_TIMESTAMP"] = now_ts
-
-        logger.info("Updating database with fetched packages")
-        try:
-            db.query(CachedPackage).delete()
-            db.flush()
-            logger.info("Cleared existing data in cached_packages table")
-            cache_packages(temp_packages, db)
-            timestamp_info = db.query(RegistryCacheInfo).first()
-            if timestamp_info:
-                timestamp_info.last_fetch_timestamp = datetime.fromisoformat(now_ts.replace('Z', '+00:00'))
-            else:
-                timestamp_info = RegistryCacheInfo(last_fetch_timestamp=datetime.fromisoformat(now_ts.replace('Z', '+00:00')))
-                db.add(timestamp_info)
-            db.commit()
-            refresh_status["last_refresh"] = now_ts
-            logger.info(f"Refreshed database with {len(temp_packages)} packages")
-        except Exception as e:
-            db.rollback()
-            logger.error(f"Failed to update database: {str(e)}")
-            refresh_status["errors"].append(f"Database update failed: {str(e)}")
-            raise
+        logger.error(f"Background cache refresh failed: {str(e)}")
+        refresh_status["errors"].append(f"Background cache refresh failed: {str(e)}")
     finally:
-        app_config["FETCH_IN_PROGRESS"] = False
         db.close()
-        logger.info("Closed database session after sync")
-    logger.info("Finished syncing packages")
+        logger.info("Closed database session after background cache refresh")
+
+async def scheduled_cache_refresh():
+    """Scheduler to run cache refresh every 8 hours after the last refresh."""
+    global last_refresh_time
+    while True:
+        # Calculate time since last refresh
+        time_since_last_refresh = datetime.utcnow() - last_refresh_time
+        # Calculate how long to wait until the next 8-hour mark
+        wait_seconds = max(0, (8 * 3600 - time_since_last_refresh.total_seconds()))
+        logger.info(f"Next scheduled cache refresh in {wait_seconds / 3600:.2f} hours")
+        await asyncio.sleep(wait_seconds)
+        # Create a new database session for the refresh task
+        db = SessionLocal()
+        await background_cache_refresh(db)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Lifespan handler for FastAPI startup and shutdown."""
+    logger.debug("Lifespan handler starting.")
     os.makedirs("instance", exist_ok=True)
     db = SessionLocal()
     try:
         db_path = "instance/fhir_igs.db"
+        # Always load existing data into memory on startup, regardless of age
         if os.path.exists(db_path) and os.path.getsize(db_path) > 0:
-            logger.info("Database file exists and has data. Checking if sync is needed...")
-            if should_sync_packages(db):
-                logger.info("Data is outdated or missing, triggering sync")
-                sync_packages()
-            else:
-                logger.info("Using existing dataset at startup")
-                cached_packages = db.query(CachedPackage).all()
-                normalized_packages = []
-                for pkg in cached_packages:
-                    pkg_data = {
-                        "package_name": pkg.package_name,
-                        "version": pkg.version,
-                        "latest_official_version": pkg.latest_official_version,
-                        "author": pkg.author,
-                        "description": pkg.description,
-                        "fhir_version": pkg.fhir_version,
-                        "url": pkg.url,
-                        "canonical": pkg.canonical,
-                        "all_versions": pkg.all_versions,
-                        "dependencies": pkg.dependencies,
-                        "version_count": pkg.version_count,
-                        "last_updated": pkg.last_updated,
-                        "latest_version": pkg.latest_version
-                    }
-                    normalized_packages.append(pkg_data)
-                app_config["MANUAL_PACKAGE_CACHE"] = normalized_packages
-                db_timestamp_info = db.query(RegistryCacheInfo).first()
-                db_timestamp = db_timestamp_info.last_fetch_timestamp if db_timestamp_info else None
-                app_config["MANUAL_CACHE_TIMESTAMP"] = db_timestamp.isoformat() if db_timestamp else datetime.utcnow().isoformat()
-                logger.info(f"Loaded {len(normalized_packages)} packages into in-memory cache from database.")
+            logger.info("Database file exists and has data. Loading into memory...")
+            cached_packages = db.query(CachedPackage).all()
+            normalized_packages = []
+            for pkg in cached_packages:
+                pkg_data = {
+                    "package_name": pkg.package_name,
+                    "version": pkg.version,
+                    "latest_official_version": pkg.latest_official_version,
+                    "author": pkg.author,
+                    "description": pkg.description,
+                    "fhir_version": pkg.fhir_version,
+                    "url": pkg.url,
+                    "canonical": pkg.canonical,
+                    "all_versions": pkg.all_versions,
+                    "dependencies": pkg.dependencies,
+                    "version_count": pkg.version_count,
+                    "last_updated": pkg.last_updated,
+                    "latest_version": pkg.latest_version
+                }
+                normalized_packages.append(pkg_data)
+            app_config["MANUAL_PACKAGE_CACHE"] = normalized_packages
+            db_timestamp_info = db.query(RegistryCacheInfo).first()
+            db_timestamp = db_timestamp_info.last_fetch_timestamp if db_timestamp_info else None
+            app_config["MANUAL_CACHE_TIMESTAMP"] = db_timestamp.isoformat() if db_timestamp else datetime.utcnow().isoformat()
+            logger.info(f"Loaded {len(normalized_packages)} packages into in-memory cache from database.")
         else:
-            logger.info("Database file does not exist or is empty, triggering sync")
-            sync_packages()
+            logger.info("Database file does not exist or is empty, initializing empty cache")
+            app_config["MANUAL_PACKAGE_CACHE"] = []
+            app_config["MANUAL_CACHE_TIMESTAMP"] = datetime.utcnow().isoformat()
+
+        # Check if data is older than 8 hours or missing, and trigger a background refresh if needed
+        should_refresh = False
+        if app_config["MANUAL_PACKAGE_CACHE"]:
+            latest_package = db.query(CachedPackage).order_by(CachedPackage.last_updated.desc()).first()
+            if not latest_package or not latest_package.last_updated:
+                logger.info("No valid last_updated timestamp, triggering background refresh")
+                should_refresh = True
+            else:
+                try:
+                    last_updated = datetime.fromisoformat(latest_package.last_updated.replace('Z', '+00:00'))
+                    time_diff = datetime.utcnow() - last_updated
+                    if time_diff.total_seconds() > 8 * 3600:  # 8 hours
+                        logger.info(f"Data is {time_diff.total_seconds()/3600:.2f} hours old, triggering background refresh")
+                        should_refresh = True
+                    else:
+                        logger.info(f"Data is {time_diff.total_seconds()/3600:.2f} hours old, no background refresh needed")
+                except ValueError:
+                    logger.warning("Invalid last_updated format, triggering background refresh")
+                    should_refresh = True
+        else:
+            logger.info("No packages in cache, triggering background refresh")
+            should_refresh = True
+
+        # Start background refresh if needed
+        if should_refresh:
+            # Create a new database session for the background task
+            background_db = SessionLocal()
+            asyncio.create_task(background_cache_refresh(background_db))
+
+        # Start the scheduler to run every 8 hours after the last refresh
+        asyncio.create_task(scheduled_cache_refresh())
+
+        logger.info("Lifespan startup completed, yielding control to FastAPI.")
         yield
     finally:
         db.close()
@@ -587,11 +187,31 @@ async def lifespan(app: FastAPI):
 app.lifespan = lifespan
 
 @app.get("/igs/search", response_model=SearchResponse)
-async def search_igs(query: str = ''):
-    """Search for IGs with embedded logic from FHIRFLARE's search_and_import and api_search_packages."""
-    logger.info(f"Searching IGs with query: {query}")
+async def search_igs(query: str = '', search_type: str = 'semantic'):
+    """
+    Search for Implementation Guides (IGs) using the specified search type.
+
+    Args:
+        query (str, optional): The search term to filter IGs by name or author (e.g., 'au core').
+        search_type (str, optional): The type of search to perform. Options are:
+            - 'semantic': Uses SpaCy for semantic similarity (default).
+            - 'string': Uses SpaCy for token-based string similarity, with a fallback to rapidfuzz for exact/near-exact matches.
+
+    Returns:
+        SearchResponse: A response containing a list of matching IGs, their metadata, and cache status.
+
+    Raises:
+        HTTPException: If the search_type is invalid or an error occurs during search.
+    """
+    logger.info(f"Searching IGs with query: {query}, search_type: {search_type}")
     db = SessionLocal()
     try:
+        # Validate search_type
+        valid_search_types = ['semantic', 'string']
+        if search_type not in valid_search_types:
+            logger.error(f"Invalid search_type: {search_type}. Must be one of {valid_search_types}.")
+            raise HTTPException(status_code=400, detail=f"Invalid search_type: {search_type}. Must be one of {valid_search_types}.")
+
         in_memory_packages = app_config["MANUAL_PACKAGE_CACHE"]
         in_memory_timestamp = app_config["MANUAL_CACHE_TIMESTAMP"]
         db_timestamp_info = db.query(RegistryCacheInfo).first()
@@ -657,33 +277,81 @@ async def search_igs(query: str = ''):
 
         logger.info("Filtering packages based on query")
         if query:
+            # Split the query into individual words
+            query_words = query.lower().split()
             filtered_packages = [
                 pkg for pkg in normalized_packages
                 if isinstance(pkg, dict) and (
-                    query.lower() in pkg.get('package_name', '').lower() or
-                    query.lower() in pkg.get('author', '').lower()
+                    all(word in pkg.get('package_name', '').lower() for word in query_words) or
+                    all(word in pkg.get('author', '').lower() for word in query_words)
                 )
             ]
-            logger.debug(f"Filtered {len(normalized_packages)} cached packages down to {len(filtered_packages)} for term '{query}'")
+            logger.debug(f"Filtered {len(normalized_packages)} cached packages down to {len(filtered_packages)} for terms '{query_words}'")
         else:
             filtered_packages = normalized_packages
             logger.debug(f"No search term provided, using all {len(filtered_packages)} cached packages.")
 
-        logger.info("Starting fuzzy search")
-        search_data = [(pkg['package_name'], pkg, 'name') for pkg in filtered_packages]
-        search_data += [(pkg['description'], pkg, 'description') for pkg in filtered_packages if pkg['description']]
-        results = process.extract(query.lower(), [item[0].lower() for item in search_data], limit=100, scorer=fuzz.partial_ratio, score_cutoff=70)
-        logger.info(f"Fuzzy search completed with {len(results)} results")
+        logger.info(f"Starting search with search_type: {search_type}")
+        results = []
+        query_doc = nlp(query.lower())  # Process the query with SpaCy
+
+        if search_type == 'semantic':
+            # Semantic similarity search using SpaCy's word embeddings
+            for pkg in filtered_packages:
+                name = pkg['package_name']
+                description = pkg['description'] if pkg['description'] else ''
+                author = pkg['author'] if pkg['author'] else ''
+                # Combine fields for a comprehensive semantic search
+                combined_text = f"{name} {description} {author}".lower()
+                doc = nlp(combined_text)
+                similarity = query_doc.similarity(doc)  # Compute semantic similarity
+                if similarity > 0.3:  # Lowered threshold for semantic similarity
+                    logger.info(f"Semantic match: {name}, similarity: {similarity}")
+                    results.append((name, pkg, 'combined', similarity))
+                else:
+                    # Fallback to rapidfuzz for exact/near-exact string matching
+                    name_score = fuzz.partial_ratio(query.lower(), name.lower())
+                    desc_score = fuzz.partial_ratio(query.lower(), description.lower()) if description else 0
+                    author_score = fuzz.partial_ratio(query.lower(), author.lower()) if author else 0
+                    max_score = max(name_score, desc_score, author_score)
+                    if max_score > 70:  # Threshold for rapidfuzz
+                        source = 'name' if max_score == name_score else ('description' if max_score == desc_score else 'author')
+                        logger.info(f"Rapidfuzz fallback in semantic mode: {name}, source: {source}, score: {max_score}")
+                        results.append((name, pkg, source, max_score / 100.0))
+        else:
+            # String similarity search
+            # First try SpaCy's token-based similarity
+            for pkg in filtered_packages:
+                name = pkg['package_name']
+                description = pkg['description'] if pkg['description'] else ''
+                author = pkg['author'] if pkg['author'] else ''
+                combined_text = f"{name} {description} {author}".lower()
+                doc = nlp(combined_text)
+                # Use token-based similarity for string matching
+                token_similarity = query_doc.similarity(doc)  # Still using similarity but focusing on token overlap
+                if token_similarity > 0.7:  # Higher threshold for token similarity
+                    logger.info(f"SpaCy token match: {name}, similarity: {token_similarity}")
+                    results.append((name, pkg, 'combined', token_similarity))
+                else:
+                    # Fallback to rapidfuzz for exact/near-exact string matching
+                    name_score = fuzz.partial_ratio(query.lower(), name.lower())
+                    desc_score = fuzz.partial_ratio(query.lower(), description.lower()) if description else 0
+                    author_score = fuzz.partial_ratio(query.lower(), author.lower()) if author else 0
+                    max_score = max(name_score, desc_score, author_score)
+                    if max_score > 70:  # Threshold for rapidfuzz
+                        source = 'name' if max_score == name_score else ('description' if max_score == desc_score else 'author')
+                        logger.info(f"Rapidfuzz match: {name}, source: {source}, score: {max_score}")
+                        results.append((name, pkg, source, max_score / 100.0))
+
+        logger.info(f"Search completed with {len(results)} results")
 
         logger.info("Building response packages")
         packages_to_display = []
         seen_names = set()
-        for matched_text, score, index in results:
-            pkg = search_data[index][1]
-            source = search_data[index][2]
+        for matched_text, pkg, source, score in sorted(results, key=lambda x: x[3], reverse=True):
             if pkg['package_name'] not in seen_names:
                 seen_names.add(pkg['package_name'])
-                adjusted_score = score * 1.5 if source == 'name' else score * 0.8
+                adjusted_score = score * 1.5 if source in ['name', 'combined'] else score * 0.8
                 logger.info(f"Matched IG: {pkg['package_name']} (source: {source}, score: {score}, adjusted: {adjusted_score})")
                 packages_to_display.append({
                     "id": pkg['package_name'],
@@ -695,7 +363,7 @@ async def search_igs(query: str = ''):
                     "Latest_Version": pkg['latest_version'],
                     "version_count": pkg['version_count'],
                     "all_versions": pkg['all_versions'] or [],
-                    "relevance": adjusted_score / 100.0
+                    "relevance": adjusted_score
                 })
 
         packages_to_display.sort(key=lambda x: x['relevance'], reverse=True)
@@ -713,97 +381,6 @@ async def search_igs(query: str = ''):
     finally:
         db.close()
         logger.info("Closed database session after search")
-
-def download_package(ig_name: str, version: str, package: Dict) -> tuple[str, Optional[str]]:
-    """Download the .tgz file for the given IG and version, mimicking FHIRFLARE's import_package_and_dependencies."""
-    # Create a temporary directory for downloads
-    download_dir = "instance/fhir_packages"
-    os.makedirs(download_dir, exist_ok=True)
-    tgz_filename = f"{ig_name}-{version}.tgz".replace('/', '_')
-    tgz_path = os.path.join(download_dir, tgz_filename)
-
-    # Check if package already exists
-    if os.path.exists(tgz_path):
-        logger.info(f"Package {ig_name}#{version} already exists at {tgz_path}")
-        return tgz_path, None
-
-    # Try canonical URL first (most reliable)
-    canonical_url = package.get('canonical')
-    if canonical_url and canonical_url.endswith(f"{version}/package.tgz"):
-        logger.info(f"Attempting to fetch package from canonical URL: {canonical_url}")
-        try:
-            response = requests.get(canonical_url, stream=True, timeout=30)
-            response.raise_for_status()
-            with open(tgz_path, 'wb') as f:
-                for chunk in response.iter_content(chunk_size=8192):
-                    if chunk:
-                        f.write(chunk)
-            logger.info(f"Successfully downloaded {ig_name}#{version} to {tgz_path} using canonical URL")
-            return tgz_path, None
-        except requests.RequestException as e:
-            error_msg = f"Failed to fetch package from canonical URL {canonical_url}: {str(e)}"
-            logger.warning(error_msg)
-
-    # Try primary FHIR registry base URL (e.g., https://packages.fhir.org/hl7.fhir.au.core/1.1.0-preview/)
-    base_url = f"{FHIR_REGISTRY_BASE_URL}/{ig_name}/{version}/"
-    logger.info(f"Attempting to fetch package from FHIR registry base URL: {base_url}")
-    try:
-        response = requests.get(base_url, stream=True, timeout=30)
-        response.raise_for_status()
-        # Check if the response is a .tgz file
-        content_type = response.headers.get('Content-Type', '')
-        content_disposition = response.headers.get('Content-Disposition', '')
-        if 'application/x-tar' in content_type or content_disposition.endswith('.tgz') or base_url.endswith('.tgz'):
-            with open(tgz_path, 'wb') as f:
-                for chunk in response.iter_content(chunk_size=8192):
-                    if chunk:
-                        f.write(chunk)
-            logger.info(f"Successfully downloaded {ig_name}#{version} to {tgz_path} using FHIR registry base URL")
-            return tgz_path, None
-        else:
-            error_msg = f"FHIR registry base URL {base_url} did not return a .tgz file (Content-Type: {content_type})"
-            logger.warning(error_msg)
-    except requests.RequestException as e:
-        error_msg = f"Failed to fetch package from FHIR registry base URL {base_url}: {str(e)}"
-        logger.warning(error_msg)
-
-    # Fallback: Try FHIR registry with explicit /package.tgz
-    tgz_url = f"{FHIR_REGISTRY_BASE_URL}/{ig_name}/{version}/package.tgz"
-    logger.info(f"Attempting to fetch package from FHIR registry explicit URL: {tgz_url}")
-    try:
-        response = requests.get(tgz_url, stream=True, timeout=30)
-        response.raise_for_status()
-        with open(tgz_path, 'wb') as f:
-            for chunk in response.iter_content(chunk_size=8192):
-                if chunk:
-                    f.write(chunk)
-        logger.info(f"Successfully downloaded {ig_name}#{version} to {tgz_path} using FHIR registry explicit URL")
-        return tgz_path, None
-    except requests.RequestException as e:
-        error_msg = f"Failed to fetch package from FHIR registry explicit URL {tgz_url}: {str(e)}"
-        logger.warning(error_msg)
-
-    # Fallback: Use registry URL (e.g., Simplifier)
-    registry_url = package.get('registry', 'https://packages.simplifier.net')
-    if registry_url.endswith('/rssfeed'):
-        registry_url = registry_url[:-8]
-    tgz_url = f"{registry_url}/{ig_name}/{version}/package.tgz"
-    logger.info(f"Attempting to fetch package from registry URL: {tgz_url}")
-    try:
-        response = requests.get(tgz_url, stream=True, timeout=30)
-        response.raise_for_status()
-        with open(tgz_path, 'wb') as f:
-            for chunk in response.iter_content(chunk_size=8192):
-                if chunk:
-                    f.write(chunk)
-        logger.info(f"Successfully downloaded {ig_name}#{version} to {tgz_path} using registry URL")
-        return tgz_path, None
-    except requests.RequestException as e:
-        error_msg = f"Failed to fetch package from registry URL {tgz_url}: {str(e)}"
-        logger.error(error_msg)
-        return None, error_msg
-
-    return None, "All download attempts failed."
 
 @app.get("/igs/{ig_id}/profiles", response_model=List[ProfileMetadata])
 async def list_profiles(ig_id: str, version: Optional[str] = None):
@@ -869,7 +446,7 @@ async def list_profiles(ig_id: str, version: Optional[str] = None):
         version = target_version
         logger.info(f"No version specified, using latest version: {target_version}")
 
-    # Download the package using updated logic
+    # Download the package
     tgz_path, error = download_package(ig_name, version, package)
     if not tgz_path:
         logger.error(f"Failed to download package for IG {ig_name} (version: {version}): {error}")
@@ -996,6 +573,7 @@ async def get_profile(ig_id: str, profile_id: str, version: Optional[str] = None
         logger.error(f"IG {ig_name} not found in cached packages.")
         raise HTTPException(status_code=404, detail=f"IG '{ig_name}' not found.")
 
+    # Determine the version to fetch
     if version:
         target_version = None
         for ver_entry in package['all_versions']:
@@ -1018,33 +596,40 @@ async def get_profile(ig_id: str, profile_id: str, version: Optional[str] = None
             raise HTTPException(status_code=404, detail=f"Package for IG '{ig_name}' (version: {version}) not found.")
         raise HTTPException(status_code=500, detail=f"Failed to fetch package: {error}")
 
-    # Extract the specific profile
+    # Extract the specific profile from the .tgz file
+    profile_resource = None
     try:
         with tarfile.open(tgz_path, mode="r:gz") as tar:
             for member in tar.getmembers():
-                if member.name.endswith('.json'):
+                if member.name.endswith('.json') and 'StructureDefinition' in member.name:
                     f = tar.extractfile(member)
                     if f:
                         resource = json.load(f)
-                        if (resource.get("resourceType") == "StructureDefinition" and
-                            (resource.get("name") == profile_id or resource.get("id") == profile_id or resource.get("url", "").endswith(profile_id))):
-                            # Strip narrative if include_narrative is False
-                            if not include_narrative:
-                                if "text" in resource:
-                                    logger.info(f"Stripping narrative from profile {profile_id} for IG {ig_name} (version: {version})")
-                                    resource["text"] = None
-                            logger.info(f"Successfully retrieved profile {profile_id} for IG {ig_name} (version: {version})")
-                            return StructureDefinition(resource=resource)
+                        if resource.get("resourceType") == "StructureDefinition":
+                            resource_name = resource.get("name", "")
+                            resource_url = resource.get("url", "")
+                            if resource_name == profile_id or resource_url.endswith(profile_id):
+                                profile_resource = resource
+                                break
+        if not profile_resource:
+            logger.error(f"Profile {profile_id} not found in package for IG {ig_name} (version: {version})")
+            raise HTTPException(status_code=404, detail=f"Profile '{profile_id}' not found in IG '{ig_name}' (version: {version}).")
     except Exception as e:
         logger.error(f"Failed to extract profile {profile_id} from package for IG {ig_name} (version: {version}): {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to extract profile: {str(e)}")
 
-    logger.error(f"Profile {profile_id} not found in package for IG {ig_name} (version: {version})")
-    raise HTTPException(status_code=404, detail=f"Profile '{profile_id}' not found in IG '{ig_name}' (version: {version}).")
+    # Strip narrative if requested
+    if not include_narrative:
+        logger.info(f"Stripping narrative from profile {profile_id}")
+        if "text" in profile_resource:
+            profile_resource["text"] = None
+
+    logger.info(f"Successfully retrieved profile {profile_id} for IG {ig_name} (version: {version})")
+    return StructureDefinition(resource=profile_resource)
 
 @app.get("/status", response_model=RefreshStatus)
 async def get_refresh_status():
-    """Return the status of the last refresh."""
+    """Get the status of the last cache refresh."""
     logger.info("Fetching refresh status")
     db = SessionLocal()
     try:
@@ -1059,10 +644,13 @@ async def get_refresh_status():
         logger.info("Closed database session after status check")
 
 @app.post("/refresh-cache", response_model=RefreshStatus)
-async def refresh_cache():
-    """Force a refresh of the package cache."""
-    logger.info("Forcing cache refresh via API")
+async def force_refresh_cache():
+    """Force a refresh of the IG metadata cache."""
+    global last_refresh_time
+    logger.info("Forcing cache refresh")
     sync_packages()
+    last_refresh_time = datetime.utcnow()  # Update the last refresh time
+    logger.info(f"Manual cache refresh completed at {last_refresh_time.isoformat()}")
     db = SessionLocal()
     try:
         package_count = db.query(CachedPackage).count()
@@ -1075,7 +663,5 @@ async def refresh_cache():
         db.close()
         logger.info("Closed database session after cache refresh")
 
-if __name__ == "__main__":
-    import uvicorn
-    port = int(os.getenv("PORT", 8000))
-    uvicorn.run(app, host="0.0.0.0", port=port)
+# Log that the application is starting
+logger.info("IggyAPI application starting up.")
