@@ -88,6 +88,29 @@ An internet connection is required to fetch IG metadata from FHIR registries dur
    ```
    Confirm that `fastapi`, `uvicorn`, `requests`, `sqlalchemy`, and other required packages are listed.
 
+##Build the Docker Image
+
+Ensure you are in the project directory where the Dockerfile is located. Build the Docker image using:
+ - docker build -t iggyapi:latest .
+
+This creates an image named iggyapi with the latest tag.
+
+##Run the Docker Container
+
+Start a container from the built image, mapping port 8000 on your host to port 8000 in the container:
+ - docker run -d -p 8000:8000 -e PORT=8000 -v C:/git/IggyApi/instance:/app/instance iggyapi:latest
+
+
+-d: Runs the container in detached mode.
+-p 8000:8000: Maps port 8000 of the container to port 8000 on your host.
+--name iggyapi-container: Names the container for easy reference.
+
+
+Verify the Container is Running:Check the status of the container:
+docker ps
+
+You should see iggyapi-container listed as running.
+
 ## Running IggyAPI
 
 1. **Start the Server**:
