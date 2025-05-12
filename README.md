@@ -1,4 +1,5 @@
-# IggyAPI
+# IggyAPI - IGGY: Your IG Spirit Animal
+Knows every guide inside out, and helps you fetch, explore, and use them.
 ![IggyAPI Logo](IggyAPI.png)
 
 IggyAPI is a FastAPI-based application designed to search, retrieve, and manage FHIR Implementation Guides (IGs) and their associated StructureDefinitions (profiles). It offers a powerful interface for querying FHIR packages, listing profiles within an IG, and fetching specific StructureDefinitions with the option to strip narrative content. Tailored to support healthcare interoperability in an Australian context, IggyAPI focuses on AU Core profiles but is capable of handling IGs from various FHIR registries worldwide.
