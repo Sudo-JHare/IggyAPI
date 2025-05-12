@@ -1,0 +1,2520 @@
+{
+  "packages": [
+    {
+      "id": "hl7.fhir.core",
+      "name": "hl7.fhir.core",
+      "description": "",
+      "url": "https://packages.simplifier.net/hl7.fhir.core/4.3.0",
+      "Author": "Martijn Harthoorn",
+      "fhir_version": "4",
+      "Latest_Version": "4.3.0",
+      "version_count": 9,
+      "all_versions": [
+        {
+          "version": "4.3.0",
+          "pubDate": "Wed, 29 Mar 2023 11:22:42 GMT"
+        },
+        {
+          "version": "3.2.0",
+          "pubDate": "Thu, 23 Apr 2020 11:48:07 GMT"
+        },
+        {
+          "version": "4.0.1",
+          "pubDate": "Thu, 23 Apr 2020 11:37:44 GMT"
+        },
+        {
+          "version": "3.5.0",
+          "pubDate": "Thu, 23 Apr 2020 11:37:25 GMT"
+        },
+        {
+          "version": "3.0.2",
+          "pubDate": "Thu, 23 Apr 2020 11:33:53 GMT"
+        },
+        {
+          "version": "1.8.0",
+          "pubDate": "Thu, 23 Apr 2020 11:33:40 GMT"
+        },
+        {
+          "version": "1.4.0",
+          "pubDate": "Thu, 23 Apr 2020 11:32:11 GMT"
+        },
+        {
+          "version": "1.0.2",
+          "pubDate": "Thu, 23 Apr 2020 11:30:34 GMT"
+        },
+        {
+          "version": "4.1.0",
+          "pubDate": "Mon, 03 Mar 2025 18:00:06 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "hl7.fhir.r2.core",
+      "name": "hl7.fhir.r2.core",
+      "description": "",
+      "url": "https://packages.simplifier.net/hl7.fhir.r2.core/1.0.2",
+      "Author": "Martijn Harthoorn",
+      "fhir_version": "1",
+      "Latest_Version": "1.0.2",
+      "version_count": 1,
+      "all_versions": [
+        {
+          "version": "1.0.2",
+          "pubDate": "Mon, 18 Nov 2019 16:06:05 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "hl7.fhir.r2.corexml",
+      "name": "hl7.fhir.r2.corexml",
+      "description": "",
+      "url": "https://packages.simplifier.net/hl7.fhir.r2.corexml/1.0.2",
+      "Author": "Martijn Harthoorn",
+      "fhir_version": "1",
+      "Latest_Version": "1.0.2",
+      "version_count": 1,
+      "all_versions": [
+        {
+          "version": "1.0.2",
+          "pubDate": "Mon, 18 Nov 2019 16:06:16 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "hl7.fhir.r2b.core",
+      "name": "hl7.fhir.r2b.core",
+      "description": "",
+      "url": "https://packages.simplifier.net/hl7.fhir.r2b.core/1.4.0",
+      "Author": "Martijn Harthoorn",
+      "fhir_version": "3",
+      "Latest_Version": "1.4.0",
+      "version_count": 1,
+      "all_versions": [
+        {
+          "version": "1.4.0",
+          "pubDate": "Mon, 18 Nov 2019 16:06:54 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "hl7.fhir.r2b.corexml",
+      "name": "hl7.fhir.r2b.corexml",
+      "description": "",
+      "url": "https://packages.simplifier.net/hl7.fhir.r2b.corexml/1.4.0",
+      "Author": "Martijn Harthoorn",
+      "fhir_version": "3",
+      "Latest_Version": "1.4.0",
+      "version_count": 1,
+      "all_versions": [
+        {
+          "version": "1.4.0",
+          "pubDate": "Mon, 18 Nov 2019 16:07:06 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "hl7.fhir.r3.core",
+      "name": "hl7.fhir.r3.core",
+      "description": "",
+      "url": "https://packages.simplifier.net/hl7.fhir.r3.core/3.0.2",
+      "Author": "Martijn Harthoorn",
+      "fhir_version": "3",
+      "Latest_Version": "3.0.2",
+      "version_count": 1,
+      "all_versions": [
+        {
+          "version": "3.0.2",
+          "pubDate": "Mon, 18 Nov 2019 16:07:59 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "hl7.fhir.r3.corexml",
+      "name": "hl7.fhir.r3.corexml",
+      "description": "",
+      "url": "https://packages.simplifier.net/hl7.fhir.r3.corexml/3.0.2",
+      "Author": "Martijn Harthoorn",
+      "fhir_version": "3",
+      "Latest_Version": "3.0.2",
+      "version_count": 1,
+      "all_versions": [
+        {
+          "version": "3.0.2",
+          "pubDate": "Mon, 18 Nov 2019 16:08:13 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "hl7.fhir.r4.core",
+      "name": "hl7.fhir.r4.core",
+      "description": "",
+      "url": "https://packages.simplifier.net/hl7.fhir.r4.core/4.0.1",
+      "Author": "Martijn Harthoorn",
+      "fhir_version": "4",
+      "Latest_Version": "4.0.1",
+      "version_count": 1,
+      "all_versions": [
+        {
+          "version": "4.0.1",
+          "pubDate": "Mon, 18 Nov 2019 16:09:10 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "hl7.fhir.r4.corexml",
+      "name": "hl7.fhir.r4.corexml",
+      "description": "",
+      "url": "https://packages.simplifier.net/hl7.fhir.r4.corexml/4.0.1",
+      "Author": "Martijn Harthoorn",
+      "fhir_version": "4",
+      "Latest_Version": "4.0.1",
+      "version_count": 1,
+      "all_versions": [
+        {
+          "version": "4.0.1",
+          "pubDate": "Mon, 18 Nov 2019 16:09:30 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "hl7.fhir.r4b.core",
+      "name": "hl7.fhir.r4b.core",
+      "description": "",
+      "url": "https://packages.simplifier.net/hl7.fhir.r4b.core/4.3.0",
+      "Author": "Martijn Harthoorn",
+      "fhir_version": "4",
+      "Latest_Version": "4.3.0",
+      "version_count": 1,
+      "all_versions": [
+        {
+          "version": "4.3.0",
+          "pubDate": "Wed, 29 Mar 2023 10:54:41 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "hl7.fhir.r4b.corexml",
+      "name": "hl7.fhir.r4b.corexml",
+      "description": "",
+      "url": "https://packages.simplifier.net/hl7.fhir.r4b.corexml/4.3.0",
+      "Author": "Martijn Harthoorn",
+      "fhir_version": "4",
+      "Latest_Version": "4.3.0",
+      "version_count": 1,
+      "all_versions": [
+        {
+          "version": "4.3.0",
+          "pubDate": "Wed, 29 Mar 2023 10:54:52 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "hl7.fhir.r5.core",
+      "name": "hl7.fhir.r5.core",
+      "description": "",
+      "url": "https://packages.simplifier.net/hl7.fhir.r5.core/5.0.0",
+      "Author": "Martijn Harthoorn",
+      "fhir_version": "5",
+      "Latest_Version": "5.0.0",
+      "version_count": 1,
+      "all_versions": [
+        {
+          "version": "5.0.0",
+          "pubDate": "Wed, 03 May 2023 09:45:18 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "hl7.fhir.r6.core",
+      "name": "hl7.fhir.r6.core",
+      "description": "",
+      "url": "http://hl7.org/fhir/6.0.0-ballot3/hl7.fhir.r6.core.tgz",
+      "Author": "HL7, Inc",
+      "fhir_version": "6",
+      "Latest_Version": "6.0.0-ballot3",
+      "version_count": 3,
+      "all_versions": [
+        {
+          "version": "6.0.0-ballot1",
+          "pubDate": "Tue, 19 Dec 2023 12:00:00 +1100 GMT"
+        },
+        {
+          "version": "6.0.0-ballot2",
+          "pubDate": "Tue, 13 Aug 2024 12:00:00 +1000 GMT"
+        },
+        {
+          "version": "6.0.0-ballot3",
+          "pubDate": "Thu, 03 Apr 2025 12:00:00 +1100 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "hl7.fhir.us.core",
+      "name": "hl7.fhir.us.core",
+      "description": "",
+      "url": "https://packages.simplifier.net/hl7.fhir.us.core/8.0.0-ballot",
+      "Author": "Martijn Harthoorn",
+      "fhir_version": "4",
+      "Latest_Version": "8.0.0-ballot",
+      "version_count": 22,
+      "all_versions": [
+        {
+          "version": "4.1.0",
+          "pubDate": "Wed, 08 Dec 2021 18:00:15 GMT"
+        },
+        {
+          "version": "5.0.1",
+          "pubDate": "Tue, 28 Jun 2022 18:00:20 GMT"
+        },
+        {
+          "version": "3.1.1",
+          "pubDate": "Tue, 08 Sep 2020 08:33:16 GMT"
+        },
+        {
+          "version": "3.2.0",
+          "pubDate": "Thu, 17 Dec 2020 00:00:23 GMT"
+        },
+        {
+          "version": "7.0.0",
+          "pubDate": "Thu, 10 Apr 2025 00:00:50 GMT"
+        },
+        {
+          "version": "7.0.0-ballot",
+          "pubDate": "Thu, 10 Apr 2025 00:00:49 GMT"
+        },
+        {
+          "version": "6.0.0",
+          "pubDate": "Thu, 04 May 2023 00:00:21 GMT"
+        },
+        {
+          "version": "6.1.0-snapshot1",
+          "pubDate": "Sat, 27 May 2023 18:01:09 GMT"
+        },
+        {
+          "version": "5.0.0",
+          "pubDate": "Sat, 14 May 2022 00:00:13 GMT"
+        },
+        {
+          "version": "4.0.0",
+          "pubDate": "Sat, 03 Jul 2021 00:00:15 GMT"
+        },
+        {
+          "version": "3.1.0",
+          "pubDate": "Mon, 18 Nov 2019 16:11:20 GMT"
+        },
+        {
+          "version": "3.0.1",
+          "pubDate": "Mon, 18 Nov 2019 16:11:18 GMT"
+        },
+        {
+          "version": "3.0.0",
+          "pubDate": "Mon, 18 Nov 2019 16:11:16 GMT"
+        },
+        {
+          "version": "2.1.0",
+          "pubDate": "Mon, 18 Nov 2019 16:11:14 GMT"
+        },
+        {
+          "version": "2.0.0",
+          "pubDate": "Mon, 18 Nov 2019 16:11:11 GMT"
+        },
+        {
+          "version": "1.1.0",
+          "pubDate": "Mon, 18 Nov 2019 16:11:10 GMT"
+        },
+        {
+          "version": "1.0.1",
+          "pubDate": "Mon, 18 Nov 2019 16:11:09 GMT"
+        },
+        {
+          "version": "1.0.0",
+          "pubDate": "Mon, 18 Nov 2019 16:11:09 GMT"
+        },
+        {
+          "version": "0.0.0",
+          "pubDate": "Mon, 18 Nov 2019 16:11:08 GMT"
+        },
+        {
+          "version": "6.0.0-ballot",
+          "pubDate": "Mon, 05 Dec 2022 18:00:08 GMT"
+        },
+        {
+          "version": "8.0.0-ballot",
+          "pubDate": "Mon, 03 Mar 2025 18:00:44 GMT"
+        },
+        {
+          "version": "6.1.0",
+          "pubDate": "Fri, 30 Jun 2023 18:01:18 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "hl7.fhir.us.qicore",
+      "name": "hl7.fhir.us.qicore",
+      "description": "",
+      "url": "https://packages.simplifier.net/hl7.fhir.us.qicore/7.0.0-ballot",
+      "Author": "Martijn Harthoorn",
+      "fhir_version": "4",
+      "Latest_Version": "7.0.0-ballot",
+      "version_count": 15,
+      "all_versions": [
+        {
+          "version": "4.1.0",
+          "pubDate": "Tue, 18 Jan 2022 18:02:07 GMT"
+        },
+        {
+          "version": "4.0.0",
+          "pubDate": "Tue, 09 Jun 2020 08:40:55 GMT"
+        },
+        {
+          "version": "5.0.0",
+          "pubDate": "Tue, 04 Apr 2023 18:00:24 GMT"
+        },
+        {
+          "version": "4.1.1",
+          "pubDate": "Thu, 31 Mar 2022 18:00:19 GMT"
+        },
+        {
+          "version": "7.0.0-ballot",
+          "pubDate": "Thu, 10 Apr 2025 00:01:33 GMT"
+        },
+        {
+          "version": "6.0.0-ballot",
+          "pubDate": "Thu, 03 Aug 2023 18:01:25 GMT"
+        },
+        {
+          "version": "6.0.0",
+          "pubDate": "Sat, 02 Mar 2024 00:01:33 GMT"
+        },
+        {
+          "version": "4.9.0",
+          "pubDate": "Mon, 25 May 2020 07:05:40 GMT"
+        },
+        {
+          "version": "3.3.0",
+          "pubDate": "Mon, 18 Nov 2019 16:12:25 GMT"
+        },
+        {
+          "version": "3.2.0",
+          "pubDate": "Mon, 18 Nov 2019 16:12:23 GMT"
+        },
+        {
+          "version": "3.1.0",
+          "pubDate": "Mon, 18 Nov 2019 16:12:21 GMT"
+        },
+        {
+          "version": "2.1.0",
+          "pubDate": "Mon, 18 Nov 2019 16:12:18 GMT"
+        },
+        {
+          "version": "2.0.0",
+          "pubDate": "Mon, 18 Nov 2019 16:12:16 GMT"
+        },
+        {
+          "version": "1.6.0",
+          "pubDate": "Mon, 18 Nov 2019 16:12:15 GMT"
+        },
+        {
+          "version": "5.0.0-ballot",
+          "pubDate": "Mon, 08 Aug 2022 16:04:00 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "hl7.cda.uv.core",
+      "name": "hl7.cda.uv.core",
+      "description": "",
+      "url": "https://packages.simplifier.net/hl7.cda.uv.core/2.0.1-sd",
+      "Author": "Martijn Harthoorn",
+      "fhir_version": "5",
+      "Latest_Version": "2.0.1-sd",
+      "version_count": 4,
+      "all_versions": [
+        {
+          "version": "2.0.1-sd",
+          "pubDate": "Wed, 18 Dec 2024 06:00:44 GMT"
+        },
+        {
+          "version": "2.0.0-sd-snapshot1",
+          "pubDate": "Sat, 16 Dec 2023 18:01:59 GMT"
+        },
+        {
+          "version": "2.0.0-sd-ballot",
+          "pubDate": "Fri, 27 Oct 2023 00:02:15 GMT"
+        },
+        {
+          "version": "2.0.0-sd",
+          "pubDate": "Fri, 17 May 2024 00:01:02 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "fhir.hspc.core",
+      "name": "fhir.hspc.core",
+      "description": "",
+      "url": "http://fhir.org/guides/hspc/core/0.1.0/package.tgz",
+      "Author": "FHIR Foundation",
+      "fhir_version": "1",
+      "Latest_Version": "0.1.0",
+      "version_count": 1,
+      "all_versions": [
+        {
+          "version": "0.1.0",
+          "pubDate": "Fri, 23 Dec 2016 12:00:00 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "hl7.fhir.cl.corecl",
+      "name": "hl7.fhir.cl.corecl",
+      "description": "",
+      "url": "https://packages.simplifier.net/hl7.fhir.cl.corecl/1.7.0",
+      "Author": "Martijn Harthoorn",
+      "fhir_version": "4",
+      "Latest_Version": "1.7.0",
+      "version_count": 1,
+      "all_versions": [
+        {
+          "version": "1.7.0",
+          "pubDate": "Fri, 18 Nov 2022 00:00:27 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "hl7.fhir.au.core",
+      "name": "hl7.fhir.au.core",
+      "description": "",
+      "url": "https://packages.simplifier.net/hl7.fhir.au.core/1.1.0-preview",
+      "Author": "Martijn Harthoorn",
+      "fhir_version": "4",
+      "Latest_Version": "1.1.0-preview",
+      "version_count": 10,
+      "all_versions": [
+        {
+          "version": "0.2.1-preview",
+          "pubDate": "Tue, 22 Aug 2023 18:01:53 GMT"
+        },
+        {
+          "version": "1.0.0",
+          "pubDate": "Thu, 30 Jan 2025 00:01:43 GMT"
+        },
+        {
+          "version": "0.4.1-preview",
+          "pubDate": "Thu, 18 Jul 2024 06:01:45 GMT"
+        },
+        {
+          "version": "1.1.0-preview",
+          "pubDate": "Thu, 06 Mar 2025 12:01:32 GMT"
+        },
+        {
+          "version": "0.3.0-ballot",
+          "pubDate": "Sun, 10 Mar 2024 00:06:55 GMT"
+        },
+        {
+          "version": "0.1.0-draft",
+          "pubDate": "Sun, 05 Mar 2023 06:00:55 GMT"
+        },
+        {
+          "version": "0.2.0-preview",
+          "pubDate": "Mon, 21 Aug 2023 12:02:02 GMT"
+        },
+        {
+          "version": "1.0.0-ballot",
+          "pubDate": "Mon, 05 Aug 2024 06:01:49 GMT"
+        },
+        {
+          "version": "1.0.0-preview",
+          "pubDate": "Mon, 02 Dec 2024 12:01:49 GMT"
+        },
+        {
+          "version": "0.2.2-preview",
+          "pubDate": "Fri, 17 Nov 2023 06:06:47 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "ch.fhir.ig.ch-core",
+      "name": "ch.fhir.ig.ch-core",
+      "description": "",
+      "url": "https://packages.simplifier.net/ch.fhir.ig.ch-core/5.0.0",
+      "Author": "Martijn Harthoorn",
+      "fhir_version": "4",
+      "Latest_Version": "5.0.0",
+      "version_count": 11,
+      "all_versions": [
+        {
+          "version": "4.0.0-ballot",
+          "pubDate": "Wed, 28 Jun 2023 00:01:49 GMT"
+        },
+        {
+          "version": "3.0.0",
+          "pubDate": "Wed, 21 Dec 2022 12:01:01 GMT"
+        },
+        {
+          "version": "5.0.0",
+          "pubDate": "Wed, 18 Dec 2024 00:01:44 GMT"
+        },
+        {
+          "version": "4.0.0",
+          "pubDate": "Tue, 19 Dec 2023 18:07:01 GMT"
+        },
+        {
+          "version": "4.0.1",
+          "pubDate": "Thu, 28 Dec 2023 18:07:16 GMT"
+        },
+        {
+          "version": "1.0.0",
+          "pubDate": "Thu, 27 Aug 2020 11:56:49 GMT"
+        },
+        {
+          "version": "0.1.0",
+          "pubDate": "Thu, 27 Aug 2020 11:56:47 GMT"
+        },
+        {
+          "version": "2.1.0",
+          "pubDate": "Thu, 07 Jul 2022 12:00:56 GMT"
+        },
+        {
+          "version": "2.0.0",
+          "pubDate": "Sat, 24 Apr 2021 18:05:19 GMT"
+        },
+        {
+          "version": "5.0.0-ballot",
+          "pubDate": "Fri, 17 May 2024 00:01:38 GMT"
+        },
+        {
+          "version": "1.2.0",
+          "pubDate": "Fri, 12 Feb 2021 12:00:46 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "hl7.fhir.fr.core",
+      "name": "hl7.fhir.fr.core",
+      "description": "",
+      "url": "https://packages.simplifier.net/hl7.fhir.fr.core/2.1.0",
+      "Author": "Martijn Harthoorn",
+      "fhir_version": "4",
+      "Latest_Version": "2.1.0",
+      "version_count": 7,
+      "all_versions": [
+        {
+          "version": "2.0.0",
+          "pubDate": "Wed, 27 Mar 2024 18:06:06 GMT"
+        },
+        {
+          "version": "2.0.0-ballot",
+          "pubDate": "Wed, 27 Mar 2024 18:06:06 GMT"
+        },
+        {
+          "version": "1.0.0",
+          "pubDate": "Wed, 26 Oct 2022 13:44:25 GMT"
+        },
+        {
+          "version": "2.1.0-ballot",
+          "pubDate": "Wed, 24 Jul 2024 18:01:44 GMT"
+        },
+        {
+          "version": "2.0.1",
+          "pubDate": "Tue, 23 Apr 2024 00:00:32 GMT"
+        },
+        {
+          "version": "1.1.0",
+          "pubDate": "Mon, 21 Nov 2022 13:33:26 GMT"
+        },
+        {
+          "version": "2.1.0",
+          "pubDate": "Fri, 06 Sep 2024 12:01:31 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "hl7.fhir.dk.core",
+      "name": "hl7.fhir.dk.core",
+      "description": "",
+      "url": "https://packages.simplifier.net/hl7.fhir.dk.core/3.4.0",
+      "Author": "Martijn Harthoorn",
+      "fhir_version": "4",
+      "Latest_Version": "3.4.0",
+      "version_count": 9,
+      "all_versions": [
+        {
+          "version": "3.3.0",
+          "pubDate": "Wed, 11 Dec 2024 12:01:36 GMT"
+        },
+        {
+          "version": "1.1.0",
+          "pubDate": "Tue, 11 Jan 2022 11:39:03 GMT"
+        },
+        {
+          "version": "3.1.0",
+          "pubDate": "Tue, 09 Jan 2024 00:07:24 GMT"
+        },
+        {
+          "version": "2.2.0",
+          "pubDate": "Thu, 31 Aug 2023 12:02:12 GMT"
+        },
+        {
+          "version": "2.0.0",
+          "pubDate": "Thu, 15 Sep 2022 00:01:25 GMT"
+        },
+        {
+          "version": "2.1.0",
+          "pubDate": "Thu, 01 Dec 2022 00:00:55 GMT"
+        },
+        {
+          "version": "3.4.0",
+          "pubDate": "Sun, 02 Feb 2025 00:01:45 GMT"
+        },
+        {
+          "version": "3.2.0",
+          "pubDate": "Mon, 06 May 2024 18:03:01 GMT"
+        },
+        {
+          "version": "3.0.0",
+          "pubDate": "Mon, 04 Dec 2023 18:06:59 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "dk.ehealth.sundhed.fhir.ig.core",
+      "name": "dk.ehealth.sundhed.fhir.ig.core",
+      "description": "",
+      "url": "https://packages.simplifier.net/dk.ehealth.sundhed.fhir.ig.core/3.5.1",
+      "Author": "Martijn Harthoorn",
+      "fhir_version": "4",
+      "Latest_Version": "3.5.1",
+      "version_count": 7,
+      "all_versions": [
+        {
+          "version": "3.5.0",
+          "pubDate": "Wed, 23 Apr 2025 12:01:45 GMT"
+        },
+        {
+          "version": "3.5.1",
+          "pubDate": "Tue, 29 Apr 2025 18:01:48 GMT"
+        },
+        {
+          "version": "3.3.0",
+          "pubDate": "Tue, 05 Nov 2024 12:01:30 GMT"
+        },
+        {
+          "version": "3.2.0",
+          "pubDate": "Thu, 19 Sep 2024 00:01:38 GMT"
+        },
+        {
+          "version": "3.1.0",
+          "pubDate": "Thu, 19 Sep 2024 00:01:38 GMT"
+        },
+        {
+          "version": "3.4.1",
+          "pubDate": "Thu, 06 Mar 2025 18:01:35 GMT"
+        },
+        {
+          "version": "3.4.0",
+          "pubDate": "Mon, 17 Feb 2025 18:01:39 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "hl7.fhir.be.core",
+      "name": "hl7.fhir.be.core",
+      "description": "",
+      "url": "https://packages.simplifier.net/hl7.fhir.be.core/2.1.2",
+      "Author": "Martijn Harthoorn",
+      "fhir_version": "4",
+      "Latest_Version": "2.1.2",
+      "version_count": 5,
+      "all_versions": [
+        {
+          "version": "2.0.0",
+          "pubDate": "Tue, 29 Mar 2022 00:01:17 GMT"
+        },
+        {
+          "version": "2.1.2",
+          "pubDate": "Mon, 02 Sep 2024 18:01:06 GMT"
+        },
+        {
+          "version": "2.0.1",
+          "pubDate": "Fri, 16 Sep 2022 18:01:17 GMT"
+        },
+        {
+          "version": "2.1.1",
+          "pubDate": "Fri, 14 Jun 2024 18:01:34 GMT"
+        },
+        {
+          "version": "2.1.0",
+          "pubDate": "Fri, 03 May 2024 18:01:35 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "hl7.fhir.be.core-clinical",
+      "name": "hl7.fhir.be.core-clinical",
+      "description": "",
+      "url": "https://packages.simplifier.net/hl7.fhir.be.core-clinical/1.0.0",
+      "Author": "Martijn Harthoorn",
+      "fhir_version": "4",
+      "Latest_Version": "1.0.0",
+      "version_count": 1,
+      "all_versions": [
+        {
+          "version": "1.0.0",
+          "pubDate": "Thu, 09 Jun 2022 18:01:33 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "hl7.fhir.cl.clcore",
+      "name": "hl7.fhir.cl.clcore",
+      "description": "",
+      "url": "https://packages.simplifier.net/hl7.fhir.cl.clcore/1.9.2",
+      "Author": "Martijn Harthoorn",
+      "fhir_version": "4",
+      "Latest_Version": "1.9.2",
+      "version_count": 11,
+      "all_versions": [
+        {
+          "version": "1.8.1",
+          "pubDate": "Wed, 28 Jun 2023 06:03:46 GMT"
+        },
+        {
+          "version": "1.8.5",
+          "pubDate": "Thu, 26 Oct 2023 18:09:37 GMT"
+        },
+        {
+          "version": "1.9.2",
+          "pubDate": "Thu, 12 Dec 2024 18:01:45 GMT"
+        },
+        {
+          "version": "1.8.9",
+          "pubDate": "Thu, 12 Dec 2024 18:01:45 GMT"
+        },
+        {
+          "version": "1.8.2",
+          "pubDate": "Sun, 03 Sep 2023 12:02:20 GMT"
+        },
+        {
+          "version": "1.8.0",
+          "pubDate": "Sat, 24 Jun 2023 00:03:36 GMT"
+        },
+        {
+          "version": "1.8.3",
+          "pubDate": "Mon, 11 Sep 2023 18:02:24 GMT"
+        },
+        {
+          "version": "1.8.4",
+          "pubDate": "Mon, 04 Sep 2023 06:02:16 GMT"
+        },
+        {
+          "version": "1.9.1",
+          "pubDate": "Fri, 27 Sep 2024 00:01:44 GMT"
+        },
+        {
+          "version": "1.8.10",
+          "pubDate": "Fri, 24 May 2024 06:01:46 GMT"
+        },
+        {
+          "version": "1.8.6",
+          "pubDate": "Fri, 24 May 2024 06:01:46 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "silth.fhir.terminology.core",
+      "name": "silth.fhir.terminology.core",
+      "description": "",
+      "url": "https://packages.simplifier.net/silth.fhir.terminology.core/0.1.2",
+      "Author": "Martijn Harthoorn",
+      "fhir_version": "5",
+      "Latest_Version": "0.1.2",
+      "version_count": 1,
+      "all_versions": [
+        {
+          "version": "0.1.2",
+          "pubDate": "Wed, 25 Oct 2023 06:09:19 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "medcom.fhir.dk.core",
+      "name": "medcom.fhir.dk.core",
+      "description": "",
+      "url": "https://packages.simplifier.net/medcom.fhir.dk.core/2.4.0",
+      "Author": "Martijn Harthoorn",
+      "fhir_version": "4",
+      "Latest_Version": "2.4.0",
+      "version_count": 5,
+      "all_versions": [
+        {
+          "version": "2.4.0",
+          "pubDate": "Thu, 27 Jun 2024 18:03:39 GMT"
+        },
+        {
+          "version": "2.3.0",
+          "pubDate": "Thu, 16 Nov 2023 18:09:14 GMT"
+        },
+        {
+          "version": "2.2.0",
+          "pubDate": "Thu, 16 Nov 2023 18:09:13 GMT"
+        },
+        {
+          "version": "2.1.0",
+          "pubDate": "Thu, 16 Nov 2023 18:09:13 GMT"
+        },
+        {
+          "version": "2.0.0",
+          "pubDate": "Thu, 15 Feb 2024 12:10:02 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "alpha.core.r4",
+      "name": "alpha.core.r4",
+      "description": "",
+      "url": "https://packages.simplifier.net/alpha.core.r4/1.0.0",
+      "Author": "Alpha National Healthcare IT Centre",
+      "fhir_version": "4",
+      "Latest_Version": "1.0.0",
+      "version_count": 1,
+      "all_versions": [
+        {
+          "version": "1.0.0",
+          "pubDate": "Wed, 22 Dec 2021 11:17:30 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "animals.core",
+      "name": "animals.core",
+      "description": "",
+      "url": "https://packages.simplifier.net/animals.core/0.0.1",
+      "Author": "Yan Bussieres",
+      "fhir_version": "4",
+      "Latest_Version": "0.0.1",
+      "version_count": 1,
+      "all_versions": [
+        {
+          "version": "0.0.1",
+          "pubDate": "Mon, 02 Dec 2024 16:02:13 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "Arkhn.core",
+      "name": "Arkhn.core",
+      "description": "",
+      "url": "https://packages.simplifier.net/Arkhn.core/0.0.2",
+      "Author": "Nicolas Riss",
+      "fhir_version": "4",
+      "Latest_Version": "0.0.2",
+      "version_count": 1,
+      "all_versions": [
+        {
+          "version": "0.0.2",
+          "pubDate": "Wed, 28 Oct 2020 17:14:44 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "br.go.ses.core",
+      "name": "br.go.ses.core",
+      "description": "",
+      "url": "https://packages.simplifier.net/br.go.ses.core/0.0.1",
+      "Author": "Martijn Harthoorn",
+      "fhir_version": "4",
+      "Latest_Version": "0.0.1",
+      "version_count": 1,
+      "all_versions": [
+        {
+          "version": "0.0.1",
+          "pubDate": "Mon, 27 Jan 2025 18:02:06 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "BRCore-01.00.00",
+      "name": "BRCore-01.00.00",
+      "description": "",
+      "url": "https://packages.simplifier.net/BRCore-01.00.00/1.0.0",
+      "Author": "Health Level Seven Brazil",
+      "fhir_version": "4",
+      "Latest_Version": "1.0.0",
+      "version_count": 1,
+      "all_versions": [
+        {
+          "version": "1.0.0",
+          "pubDate": "Wed, 12 Aug 2020 15:10:42 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "ca.infoway.io.core",
+      "name": "ca.infoway.io.core",
+      "description": "",
+      "url": "https://packages.simplifier.net/ca.infoway.io.core/1.0.0-dft-preballot",
+      "Author": "Canadian FHIR Registry",
+      "fhir_version": "4",
+      "Latest_Version": "0.2.0-dft",
+      "version_count": 9,
+      "all_versions": [
+        {
+          "version": "0.3.0-dft-ballot-2",
+          "pubDate": "Wed, 30 Oct 2024 11:52:44 GMT"
+        },
+        {
+          "version": "0.2.0-dft-ballot",
+          "pubDate": "Wed, 27 Mar 2024 20:20:55 GMT"
+        },
+        {
+          "version": "0.3.0-dft-ballot-1",
+          "pubDate": "Tue, 29 Oct 2024 23:08:36 GMT"
+        },
+        {
+          "version": "0.1.0-dft",
+          "pubDate": "Tue, 26 Mar 2024 20:39:36 GMT"
+        },
+        {
+          "version": "0.1.0-DFT-Ballot",
+          "pubDate": "Thu, 21 Dec 2023 18:30:11 GMT"
+        },
+        {
+          "version": "0.3.1-dft-ballot",
+          "pubDate": "Mon, 09 Dec 2024 18:53:36 GMT"
+        },
+        {
+          "version": "0.2.0-dft",
+          "pubDate": "Fri, 19 Jul 2024 22:08:04 GMT"
+        },
+        {
+          "version": "0.1.0-DFT-Ballot-pre",
+          "pubDate": "Fri, 15 Dec 2023 17:39:48 GMT"
+        },
+        {
+          "version": "1.0.0-dft-preballot",
+          "pubDate": "Fri, 11 Apr 2025 19:17:47 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "ch.cel.TheTest2-core",
+      "name": "ch.cel.TheTest2-core",
+      "description": "",
+      "url": "https://packages.simplifier.net/ch.cel.TheTest2-core/0.8.1",
+      "Author": "Samuel Merki",
+      "fhir_version": "4",
+      "Latest_Version": "0.8.1",
+      "version_count": 2,
+      "all_versions": [
+        {
+          "version": "0.8.1",
+          "pubDate": "Fri, 04 Aug 2023 10:44:18 GMT"
+        },
+        {
+          "version": "0.8.0-beta",
+          "pubDate": "Fri, 04 Aug 2023 10:36:48 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "ch.fhir.BNW.ch-core",
+      "name": "ch.fhir.BNW.ch-core",
+      "description": "",
+      "url": "https://packages.simplifier.net/ch.fhir.BNW.ch-core/1.0.0",
+      "Author": "Joël Kupferschmid",
+      "fhir_version": "4",
+      "Latest_Version": "1.0.0",
+      "version_count": 1,
+      "all_versions": [
+        {
+          "version": "1.0.0",
+          "pubDate": "Fri, 04 Aug 2023 08:13:56 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "de.acticore.export",
+      "name": "de.acticore.export",
+      "description": "",
+      "url": "https://packages.simplifier.net/de.acticore.export/0.9.0",
+      "Author": "Denis Cohn",
+      "fhir_version": "4",
+      "Latest_Version": "0.9.0",
+      "version_count": 1,
+      "all_versions": [
+        {
+          "version": "0.9.0",
+          "pubDate": "Wed, 24 Mar 2021 15:08:49 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "eReferralOntario.core",
+      "name": "eReferralOntario.core",
+      "description": "",
+      "url": "https://packages.simplifier.net/eReferralOntario.core/0.10.2",
+      "Author": "Canadian FHIR Registry",
+      "fhir_version": "4",
+      "Latest_Version": "0.10.2",
+      "version_count": 1,
+      "all_versions": [
+        {
+          "version": "0.10.2",
+          "pubDate": "Mon, 19 Jul 2021 12:40:20 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "eReferralOntarioNew.core",
+      "name": "eReferralOntarioNew.core",
+      "description": "",
+      "url": "https://packages.simplifier.net/eReferralOntarioNew.core/0.10.0",
+      "Author": "Canadian FHIR Registry",
+      "fhir_version": "4",
+      "Latest_Version": "0.10.0",
+      "version_count": 1,
+      "all_versions": [
+        {
+          "version": "0.10.0",
+          "pubDate": "Tue, 11 Jan 2022 18:22:00 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "fhir.ieb.core",
+      "name": "fhir.ieb.core",
+      "description": "",
+      "url": "https://packages.simplifier.net/fhir.ieb.core/0.1.2",
+      "Author": "Igor Oliveira Vieira",
+      "fhir_version": "4",
+      "Latest_Version": "0.1.2",
+      "version_count": 11,
+      "all_versions": [
+        {
+          "version": "0.0.1",
+          "pubDate": "Thu, 20 May 2021 23:13:32 GMT"
+        },
+        {
+          "version": "0.0.3",
+          "pubDate": "Sun, 23 May 2021 13:57:10 GMT"
+        },
+        {
+          "version": "0.0.7",
+          "pubDate": "Sun, 06 Jun 2021 20:21:25 GMT"
+        },
+        {
+          "version": "0.0.6",
+          "pubDate": "Sun, 06 Jun 2021 19:23:13 GMT"
+        },
+        {
+          "version": "0.0.5",
+          "pubDate": "Sun, 06 Jun 2021 15:41:29 GMT"
+        },
+        {
+          "version": "0.0.4",
+          "pubDate": "Sun, 06 Jun 2021 13:59:55 GMT"
+        },
+        {
+          "version": "0.1.2",
+          "pubDate": "Mon, 07 Jun 2021 22:27:24 GMT"
+        },
+        {
+          "version": "0.1.1",
+          "pubDate": "Mon, 07 Jun 2021 22:17:32 GMT"
+        },
+        {
+          "version": "0.1.0",
+          "pubDate": "Mon, 07 Jun 2021 21:43:30 GMT"
+        },
+        {
+          "version": "0.0.10",
+          "pubDate": "Mon, 07 Jun 2021 20:51:50 GMT"
+        },
+        {
+          "version": "0.0.2",
+          "pubDate": "Fri, 21 May 2021 00:11:27 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "fhir.r4.ukcore.stu1",
+      "name": "fhir.r4.ukcore.stu1",
+      "description": "",
+      "url": "https://packages.simplifier.net/fhir.r4.ukcore.stu1/1.0.4",
+      "Author": "HL7 UK",
+      "fhir_version": "4",
+      "Latest_Version": "1.0.4",
+      "version_count": 2,
+      "all_versions": [
+        {
+          "version": "1.0.0",
+          "pubDate": "Thu, 22 Dec 2022 10:41:25 GMT"
+        },
+        {
+          "version": "1.0.4",
+          "pubDate": "Thu, 02 Feb 2023 13:19:30 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "fhir.r4.ukcore.stu2",
+      "name": "fhir.r4.ukcore.stu2",
+      "description": "",
+      "url": "https://packages.simplifier.net/fhir.r4.ukcore.stu2/2.0.2",
+      "Author": "HL7 UK",
+      "fhir_version": "4",
+      "Latest_Version": "2.0.2",
+      "version_count": 4,
+      "all_versions": [
+        {
+          "version": "2.0.1",
+          "pubDate": "Wed, 17 Jul 2024 07:21:57 GMT"
+        },
+        {
+          "version": "2.0.2",
+          "pubDate": "Mon, 24 Feb 2025 13:06:40 GMT"
+        },
+        {
+          "version": "1.1.3",
+          "pubDate": "Fri, 23 Jun 2023 08:46:45 GMT"
+        },
+        {
+          "version": "2.0.0",
+          "pubDate": "Fri, 10 May 2024 06:59:20 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "fhir.r4.ukcore.stu3.currentbuild",
+      "name": "fhir.r4.ukcore.stu3.currentbuild",
+      "description": "",
+      "url": "https://packages.simplifier.net/fhir.r4.ukcore.stu3.currentbuild/0.22.0-pre-release",
+      "Author": "HL7 UK",
+      "fhir_version": "4",
+      "Latest_Version": "0.22.0-pre-release",
+      "version_count": 19,
+      "all_versions": [
+        {
+          "version": "0.21.0-pre-release",
+          "pubDate": "Wed, 26 Mar 2025 08:17:33 GMT"
+        },
+        {
+          "version": "0.0.3-pre-release",
+          "pubDate": "Wed, 22 Feb 2023 12:13:10 GMT"
+        },
+        {
+          "version": "0.0.7-sprint-7-review",
+          "pubDate": "Wed, 20 Sep 2023 06:50:11 GMT"
+        },
+        {
+          "version": "0.0.15-pre-release",
+          "pubDate": "Wed, 06 Nov 2024 10:19:26 GMT"
+        },
+        {
+          "version": "0.0.18-pre-release",
+          "pubDate": "Tue, 28 Jan 2025 14:10:51 GMT"
+        },
+        {
+          "version": "0.0.19-pre-release",
+          "pubDate": "Tue, 25 Feb 2025 14:30:05 GMT"
+        },
+        {
+          "version": "0.0.17-pre-release",
+          "pubDate": "Tue, 17 Dec 2024 08:33:53 GMT"
+        },
+        {
+          "version": "0.0.10-pre-release",
+          "pubDate": "Tue, 16 Jul 2024 07:56:54 GMT"
+        },
+        {
+          "version": "0.20.0-pre-release",
+          "pubDate": "Tue, 04 Mar 2025 09:52:31 GMT"
+        },
+        {
+          "version": "0.0.13-pre-release",
+          "pubDate": "Tue, 01 Oct 2024 07:31:55 GMT"
+        },
+        {
+          "version": "0.0.12-pre-release",
+          "pubDate": "Thu, 26 Sep 2024 10:59:20 GMT"
+        },
+        {
+          "version": "0.0.8-pre-release",
+          "pubDate": "Thu, 21 Dec 2023 13:00:49 GMT"
+        },
+        {
+          "version": "0.0.11-pre-release",
+          "pubDate": "Thu, 18 Jul 2024 07:15:42 GMT"
+        },
+        {
+          "version": "0.0.14-pre-release",
+          "pubDate": "Thu, 17 Oct 2024 08:38:33 GMT"
+        },
+        {
+          "version": "0.22.0-pre-release",
+          "pubDate": "Thu, 08 May 2025 14:21:12 GMT"
+        },
+        {
+          "version": "0.0.5-sprint-6-review",
+          "pubDate": "Mon, 27 Feb 2023 13:25:56 GMT"
+        },
+        {
+          "version": "0.0.16-pre-release",
+          "pubDate": "Mon, 18 Nov 2024 15:33:05 GMT"
+        },
+        {
+          "version": "0.0.6-pre-release",
+          "pubDate": "Fri, 04 Aug 2023 09:34:03 GMT"
+        },
+        {
+          "version": "0.0.9-pre-release",
+          "pubDate": "Fri, 01 Mar 2024 08:49:30 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "GAL-BM-Projeto.core",
+      "name": "GAL-BM-Projeto.core",
+      "description": "",
+      "url": "https://packages.simplifier.net/GAL-BM-Projeto.core/0.0.1",
+      "Author": "Luiz Carlos Ferreira dos Santos",
+      "fhir_version": "4",
+      "Latest_Version": "0.0.1",
+      "version_count": 1,
+      "all_versions": [
+        {
+          "version": "0.0.1",
+          "pubDate": "Thu, 12 Mar 2020 19:39:15 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "healthhub.fhir.dk.core",
+      "name": "healthhub.fhir.dk.core",
+      "description": "",
+      "url": "https://packages.simplifier.net/healthhub.fhir.dk.core/1.0.24",
+      "Author": "Jonas Hartwig",
+      "fhir_version": "4",
+      "Latest_Version": "1.0.24",
+      "version_count": 25,
+      "all_versions": [
+        {
+          "version": "1.0.13",
+          "pubDate": "Wed, 25 Sep 2024 12:46:13 GMT"
+        },
+        {
+          "version": "1.0.11",
+          "pubDate": "Wed, 18 Sep 2024 14:03:22 GMT"
+        },
+        {
+          "version": "1.0.5",
+          "pubDate": "Wed, 10 Jul 2024 12:45:04 GMT"
+        },
+        {
+          "version": "1.0.1-alpha",
+          "pubDate": "Wed, 08 May 2024 11:37:20 GMT"
+        },
+        {
+          "version": "1.0.7",
+          "pubDate": "Tue, 13 Aug 2024 10:40:07 GMT"
+        },
+        {
+          "version": "1.0.21",
+          "pubDate": "Tue, 01 Oct 2024 09:30:17 GMT"
+        },
+        {
+          "version": "1.0.17",
+          "pubDate": "Thu, 26 Sep 2024 13:58:40 GMT"
+        },
+        {
+          "version": "1.0.16",
+          "pubDate": "Thu, 26 Sep 2024 13:54:05 GMT"
+        },
+        {
+          "version": "1.0.15",
+          "pubDate": "Thu, 26 Sep 2024 09:31:22 GMT"
+        },
+        {
+          "version": "1.0.14",
+          "pubDate": "Thu, 26 Sep 2024 09:17:28 GMT"
+        },
+        {
+          "version": "1.0.22",
+          "pubDate": "Thu, 03 Oct 2024 13:03:54 GMT"
+        },
+        {
+          "version": "1.0.20",
+          "pubDate": "Mon, 30 Sep 2024 11:50:09 GMT"
+        },
+        {
+          "version": "1.0.19",
+          "pubDate": "Mon, 30 Sep 2024 08:54:27 GMT"
+        },
+        {
+          "version": "1.0.0-alpha",
+          "pubDate": "Mon, 29 Apr 2024 11:17:30 GMT"
+        },
+        {
+          "version": "1.0.2-alpha",
+          "pubDate": "Mon, 27 May 2024 08:04:22 GMT"
+        },
+        {
+          "version": "1.0.10",
+          "pubDate": "Mon, 19 Aug 2024 12:23:17 GMT"
+        },
+        {
+          "version": "1.0.9",
+          "pubDate": "Mon, 19 Aug 2024 06:19:14 GMT"
+        },
+        {
+          "version": "1.0.23",
+          "pubDate": "Mon, 14 Oct 2024 10:40:08 GMT"
+        },
+        {
+          "version": "1.0.6",
+          "pubDate": "Mon, 12 Aug 2024 08:23:37 GMT"
+        },
+        {
+          "version": "1.0.4",
+          "pubDate": "Mon, 08 Jul 2024 13:32:33 GMT"
+        },
+        {
+          "version": "1.0.3-alpha",
+          "pubDate": "Mon, 08 Jul 2024 13:01:29 GMT"
+        },
+        {
+          "version": "1.0.18",
+          "pubDate": "Fri, 27 Sep 2024 08:10:50 GMT"
+        },
+        {
+          "version": "1.0.12",
+          "pubDate": "Fri, 20 Sep 2024 12:21:37 GMT"
+        },
+        {
+          "version": "1.0.8",
+          "pubDate": "Fri, 16 Aug 2024 14:45:24 GMT"
+        },
+        {
+          "version": "1.0.24",
+          "pubDate": "Fri, 01 Nov 2024 13:28:25 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "hl7.at.fhir.core.r4",
+      "name": "hl7.at.fhir.core.r4",
+      "description": "",
+      "url": "http://hl7.at/fhir/HL7ATCoreProfiles/4.0.1/2.0.0/package.tgz",
+      "Author": "HL7 Austria",
+      "fhir_version": "4",
+      "Latest_Version": "2.0.0",
+      "version_count": 1,
+      "all_versions": [
+        {
+          "version": "2.0.0",
+          "pubDate": "Mon, 27 Jan 2025 10:36:59 +0000"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "hl7.at.fhir.core.r5",
+      "name": "hl7.at.fhir.core.r5",
+      "description": "",
+      "url": "http://hl7.at/fhir/HL7ATCoreProfiles/5.0.0/2.0.0/package.tgz",
+      "Author": "HL7 Austria",
+      "fhir_version": "5",
+      "Latest_Version": "2.0.0",
+      "version_count": 1,
+      "all_versions": [
+        {
+          "version": "2.0.0",
+          "pubDate": "Fri, 24 Jan 2025 02:19:57 +0000"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "hl7.fhir.BNW.core",
+      "name": "hl7.fhir.BNW.core",
+      "description": "",
+      "url": "https://packages.simplifier.net/hl7.fhir.BNW.core/1.0.0",
+      "Author": "Joël Kupferschmid",
+      "fhir_version": "4",
+      "Latest_Version": "1.0.0",
+      "version_count": 1,
+      "all_versions": [
+        {
+          "version": "1.0.0",
+          "pubDate": "Fri, 04 Aug 2023 08:09:39 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "hl7.fhir.essilux.core",
+      "name": "hl7.fhir.essilux.core",
+      "description": "",
+      "url": "https://packages.simplifier.net/hl7.fhir.essilux.core/0.0.2",
+      "Author": "Lux-Eyecare",
+      "fhir_version": "4",
+      "Latest_Version": "0.0.2",
+      "version_count": 3,
+      "all_versions": [
+        {
+          "version": "0.0.1",
+          "pubDate": "Wed, 03 May 2023 14:01:47 GMT"
+        },
+        {
+          "version": "0.0.2",
+          "pubDate": "Tue, 09 May 2023 15:42:26 GMT"
+        },
+        {
+          "version": "0.0.1-alpha",
+          "pubDate": "Thu, 16 Feb 2023 10:40:41 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "hl7.fhir.kr.core",
+      "name": "hl7.fhir.kr.core",
+      "description": "",
+      "url": "https://packages.simplifier.net/hl7.fhir.kr.core/1.0.2",
+      "Author": "KHIS",
+      "fhir_version": "4",
+      "Latest_Version": "1.0.2",
+      "version_count": 2,
+      "all_versions": [
+        {
+          "version": "1.0.1",
+          "pubDate": "Thu, 05 Oct 2023 18:04:17 GMT"
+        },
+        {
+          "version": "1.0.2",
+          "pubDate": "Fri, 15 Dec 2023 06:10:15 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "hl7.fhir.r4.id.core",
+      "name": "hl7.fhir.r4.id.core",
+      "description": "",
+      "url": "https://packages.simplifier.net/hl7.fhir.r4.id.core/0.1.0",
+      "Author": "DTO KEMKES",
+      "fhir_version": "4",
+      "Latest_Version": "0.1.0",
+      "version_count": 1,
+      "all_versions": [
+        {
+          "version": "0.1.0",
+          "pubDate": "Wed, 02 Feb 2022 07:30:12 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "hl7.fhir.sami.core",
+      "name": "hl7.fhir.sami.core",
+      "description": "",
+      "url": "https://packages.simplifier.net/hl7.fhir.sami.core/0.0.1",
+      "Author": "Sami - Data Team",
+      "fhir_version": "4",
+      "Latest_Version": "0.0.1",
+      "version_count": 1,
+      "all_versions": [
+        {
+          "version": "0.0.1",
+          "pubDate": "Mon, 28 Mar 2022 14:09:14 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "hl7.fhir.us.core.v311",
+      "name": "hl7.fhir.us.core.v311",
+      "description": "",
+      "url": "https://packages.simplifier.net/hl7.fhir.us.core.v311/3.1.1",
+      "Author": "Martijn Harthoorn",
+      "fhir_version": "4",
+      "Latest_Version": "3.1.1",
+      "version_count": 1,
+      "all_versions": [
+        {
+          "version": "3.1.1",
+          "pubDate": "Thu, 05 Sep 2024 12:00:44 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "hl7.fhir.us.core.v610",
+      "name": "hl7.fhir.us.core.v610",
+      "description": "",
+      "url": "https://packages.simplifier.net/hl7.fhir.us.core.v610/6.1.0",
+      "Author": "Martijn Harthoorn",
+      "fhir_version": "4",
+      "Latest_Version": "6.1.0",
+      "version_count": 1,
+      "all_versions": [
+        {
+          "version": "6.1.0",
+          "pubDate": "Tue, 19 Nov 2024 00:00:44 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "hl7.fhir.vn.core",
+      "name": "hl7.fhir.vn.core",
+      "description": "",
+      "url": "https://packages.simplifier.net/hl7.fhir.vn.core/1.0.0-beta",
+      "Author": "Nguyễn Hải Phong",
+      "fhir_version": "4",
+      "Latest_Version": "1.0.0-beta",
+      "version_count": 1,
+      "all_versions": [
+        {
+          "version": "1.0.0-beta",
+          "pubDate": "Mon, 24 May 2021 06:38:59 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "il.core.fhir.r4",
+      "name": "il.core.fhir.r4",
+      "description": "",
+      "url": "https://packages.simplifier.net/il.core.fhir.r4/0.17.5",
+      "Author": "Roy Cohen",
+      "fhir_version": "4",
+      "Latest_Version": "0.17.5",
+      "version_count": 41,
+      "all_versions": [
+        {
+          "version": "0.9.1",
+          "pubDate": "Wed, 28 Sep 2022 11:46:38 GMT"
+        },
+        {
+          "version": "0.17.1",
+          "pubDate": "Wed, 26 Mar 2025 14:18:09 GMT"
+        },
+        {
+          "version": "0.11.0",
+          "pubDate": "Wed, 25 Jan 2023 18:09:54 GMT"
+        },
+        {
+          "version": "0.13.0",
+          "pubDate": "Wed, 08 Nov 2023 20:34:57 GMT"
+        },
+        {
+          "version": "0.16.0",
+          "pubDate": "Wed, 06 Nov 2024 20:09:16 GMT"
+        },
+        {
+          "version": "0.10.1",
+          "pubDate": "Tue, 22 Nov 2022 13:57:22 GMT"
+        },
+        {
+          "version": "0.17.2",
+          "pubDate": "Tue, 22 Apr 2025 14:22:36 GMT"
+        },
+        {
+          "version": "0.17.1-params",
+          "pubDate": "Tue, 22 Apr 2025 14:15:49 GMT"
+        },
+        {
+          "version": "0.15.0",
+          "pubDate": "Tue, 18 Jun 2024 06:44:13 GMT"
+        },
+        {
+          "version": "0.10.0",
+          "pubDate": "Tue, 15 Nov 2022 12:46:58 GMT"
+        },
+        {
+          "version": "0.15.3",
+          "pubDate": "Tue, 10 Sep 2024 08:11:12 GMT"
+        },
+        {
+          "version": "0.13.2",
+          "pubDate": "Tue, 09 Jan 2024 14:02:57 GMT"
+        },
+        {
+          "version": "0.14.0",
+          "pubDate": "Tue, 09 Apr 2024 20:45:47 GMT"
+        },
+        {
+          "version": "0.8.0",
+          "pubDate": "Tue, 07 Jun 2022 15:21:38 GMT"
+        },
+        {
+          "version": "0.17.0",
+          "pubDate": "Tue, 04 Mar 2025 12:32:01 GMT"
+        },
+        {
+          "version": "0.12.0-snapshots",
+          "pubDate": "Tue, 03 Oct 2023 15:06:34 GMT"
+        },
+        {
+          "version": "0.13.1",
+          "pubDate": "Tue, 02 Jan 2024 10:31:17 GMT"
+        },
+        {
+          "version": "0.14.3",
+          "pubDate": "Thu, 30 May 2024 13:55:07 GMT"
+        },
+        {
+          "version": "0.14.2",
+          "pubDate": "Thu, 30 May 2024 09:34:52 GMT"
+        },
+        {
+          "version": "0.7.0",
+          "pubDate": "Thu, 28 Apr 2022 19:46:08 GMT"
+        },
+        {
+          "version": "0.11.1",
+          "pubDate": "Thu, 22 Jun 2023 12:18:38 GMT"
+        },
+        {
+          "version": "0.14.1",
+          "pubDate": "Thu, 18 Apr 2024 08:39:33 GMT"
+        },
+        {
+          "version": "0.16.1",
+          "pubDate": "Thu, 14 Nov 2024 07:36:48 GMT"
+        },
+        {
+          "version": "0.16.2",
+          "pubDate": "Thu, 13 Feb 2025 15:49:06 GMT"
+        },
+        {
+          "version": "0.15.2",
+          "pubDate": "Thu, 05 Sep 2024 11:24:12 GMT"
+        },
+        {
+          "version": "0.9.0",
+          "pubDate": "Sun, 31 Jul 2022 06:16:29 GMT"
+        },
+        {
+          "version": "0.12.0",
+          "pubDate": "Sun, 27 Aug 2023 07:48:07 GMT"
+        },
+        {
+          "version": "0.6.0",
+          "pubDate": "Sun, 20 Feb 2022 17:01:25 GMT"
+        },
+        {
+          "version": "0.4.0",
+          "pubDate": "Sun, 15 Aug 2021 08:16:45 GMT"
+        },
+        {
+          "version": "0.15.1",
+          "pubDate": "Sun, 14 Jul 2024 18:13:57 GMT"
+        },
+        {
+          "version": "0.8.1",
+          "pubDate": "Sun, 12 Jun 2022 09:21:12 GMT"
+        },
+        {
+          "version": "0.3.0",
+          "pubDate": "Sun, 11 Jul 2021 15:33:20 GMT"
+        },
+        {
+          "version": "0.5.0",
+          "pubDate": "Sun, 09 Jan 2022 16:50:31 GMT"
+        },
+        {
+          "version": "0.2.0",
+          "pubDate": "Sun, 04 Jul 2021 07:50:29 GMT"
+        },
+        {
+          "version": "0.1.1",
+          "pubDate": "Sun, 04 Jul 2021 07:47:59 GMT"
+        },
+        {
+          "version": "0.15.4",
+          "pubDate": "Sun, 03 Nov 2024 13:29:17 GMT"
+        },
+        {
+          "version": "0.10.1-snapshots",
+          "pubDate": "Mon, 12 Dec 2022 15:32:38 GMT"
+        },
+        {
+          "version": "0.17.5",
+          "pubDate": "Mon, 05 May 2025 16:50:32 GMT"
+        },
+        {
+          "version": "0.17.4",
+          "pubDate": "Mon, 05 May 2025 12:10:33 GMT"
+        },
+        {
+          "version": "0.17.3",
+          "pubDate": "Mon, 05 May 2025 12:07:51 GMT"
+        },
+        {
+          "version": "0.1.0",
+          "pubDate": "Fri, 02 Jul 2021 09:43:40 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "il.core.fhir.r4.2023",
+      "name": "il.core.fhir.r4.2023",
+      "description": "",
+      "url": "https://packages.simplifier.net/il.core.fhir.r4.2023/0.1.0",
+      "Author": "Roy Cohen",
+      "fhir_version": "4",
+      "Latest_Version": "0.1.0",
+      "version_count": 1,
+      "all_versions": [
+        {
+          "version": "0.1.0",
+          "pubDate": "Thu, 26 Oct 2023 15:54:43 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "iteyes.myhw.core",
+      "name": "iteyes.myhw.core",
+      "description": "",
+      "url": "https://packages.simplifier.net/iteyes.myhw.core/1.1.9",
+      "Author": "iteyes-dt",
+      "fhir_version": "4",
+      "Latest_Version": "1.1.9",
+      "version_count": 31,
+      "all_versions": [
+        {
+          "version": "1.1.7",
+          "pubDate": "Wed, 22 Feb 2023 08:24:23 GMT"
+        },
+        {
+          "version": "1.0.4-beta",
+          "pubDate": "Wed, 11 May 2022 06:53:12 GMT"
+        },
+        {
+          "version": "1.1.9-beta",
+          "pubDate": "Wed, 08 Mar 2023 08:31:18 GMT"
+        },
+        {
+          "version": "1.1.2-beta",
+          "pubDate": "Wed, 08 Jun 2022 01:50:43 GMT"
+        },
+        {
+          "version": "1.0.9",
+          "pubDate": "Tue, 31 May 2022 06:59:47 GMT"
+        },
+        {
+          "version": "1.0.9-beta",
+          "pubDate": "Tue, 31 May 2022 01:34:28 GMT"
+        },
+        {
+          "version": "1.0.8-beta",
+          "pubDate": "Tue, 24 May 2022 04:44:10 GMT"
+        },
+        {
+          "version": "1.0.7",
+          "pubDate": "Tue, 24 May 2022 02:23:20 GMT"
+        },
+        {
+          "version": "1.0.7-beta",
+          "pubDate": "Tue, 24 May 2022 02:05:12 GMT"
+        },
+        {
+          "version": "1.0.6",
+          "pubDate": "Tue, 24 May 2022 01:49:16 GMT"
+        },
+        {
+          "version": "1.0.6-beta",
+          "pubDate": "Tue, 24 May 2022 01:02:01 GMT"
+        },
+        {
+          "version": "1.1.4-beta",
+          "pubDate": "Tue, 21 Jun 2022 04:35:05 GMT"
+        },
+        {
+          "version": "1.1.2",
+          "pubDate": "Tue, 14 Jun 2022 08:59:49 GMT"
+        },
+        {
+          "version": "1.0.3",
+          "pubDate": "Tue, 10 May 2022 07:34:17 GMT"
+        },
+        {
+          "version": "1.1.8",
+          "pubDate": "Tue, 07 Mar 2023 03:41:01 GMT"
+        },
+        {
+          "version": "1.1.8-beta",
+          "pubDate": "Tue, 07 Mar 2023 01:30:33 GMT"
+        },
+        {
+          "version": "1.1.1",
+          "pubDate": "Tue, 07 Jun 2022 07:52:14 GMT"
+        },
+        {
+          "version": "1.1.5-beta",
+          "pubDate": "Thu, 25 Aug 2022 11:00:51 GMT"
+        },
+        {
+          "version": "1.0.5",
+          "pubDate": "Thu, 19 May 2022 06:59:09 GMT"
+        },
+        {
+          "version": "1.0.5-beta",
+          "pubDate": "Thu, 12 May 2022 12:07:31 GMT"
+        },
+        {
+          "version": "1.0.4",
+          "pubDate": "Thu, 12 May 2022 11:41:57 GMT"
+        },
+        {
+          "version": "1.1.9",
+          "pubDate": "Thu, 09 Mar 2023 05:23:26 GMT"
+        },
+        {
+          "version": "1.1.6-beta",
+          "pubDate": "Mon, 30 Jan 2023 00:47:16 GMT"
+        },
+        {
+          "version": "1.1.3",
+          "pubDate": "Mon, 20 Jun 2022 07:44:09 GMT"
+        },
+        {
+          "version": "1.1.3-beta",
+          "pubDate": "Mon, 20 Jun 2022 06:58:42 GMT"
+        },
+        {
+          "version": "1.1.6",
+          "pubDate": "Mon, 13 Feb 2023 04:38:18 GMT"
+        },
+        {
+          "version": "1.0.3-beta",
+          "pubDate": "Mon, 09 May 2022 07:14:28 GMT"
+        },
+        {
+          "version": "1.0.2",
+          "pubDate": "Mon, 02 May 2022 05:56:44 GMT"
+        },
+        {
+          "version": "1.1.5",
+          "pubDate": "Fri, 27 Jan 2023 04:42:22 GMT"
+        },
+        {
+          "version": "1.0.1",
+          "pubDate": "Fri, 22 Apr 2022 08:09:36 GMT"
+        },
+        {
+          "version": "1.1.4",
+          "pubDate": "Fri, 08 Jul 2022 06:07:19 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "jp-core.draft1",
+      "name": "jp-core.draft1",
+      "description": "",
+      "url": "https://packages.simplifier.net/jp-core.draft1/1.0.1-beta",
+      "Author": "KAZUHIKO OHE",
+      "fhir_version": "4",
+      "Latest_Version": "1.0.1-beta",
+      "version_count": 4,
+      "all_versions": [
+        {
+          "version": "1.0.1-beta",
+          "pubDate": "Sun, 10 Apr 2022 14:41:14 GMT"
+        },
+        {
+          "version": "1.0.1-alpha",
+          "pubDate": "Sun, 10 Apr 2022 10:57:18 GMT"
+        },
+        {
+          "version": "1.0.0",
+          "pubDate": "Fri, 08 Apr 2022 23:28:20 GMT"
+        },
+        {
+          "version": "0.0.0-alpha",
+          "pubDate": "Fri, 08 Apr 2022 23:15:11 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "jp-core.r4",
+      "name": "jp-core.r4",
+      "description": "",
+      "url": "https://packages.simplifier.net/jp-core.r4/1.1.1-draft1",
+      "Author": "KAZUHIKO OHE",
+      "fhir_version": "4",
+      "Latest_Version": "1.1.1-draft1",
+      "version_count": 3,
+      "all_versions": [
+        {
+          "version": "1.1.1-rc",
+          "pubDate": "Thu, 03 Nov 2022 20:39:47 GMT"
+        },
+        {
+          "version": "1.1.1-draft1",
+          "pubDate": "Sun, 30 Oct 2022 05:59:18 GMT"
+        },
+        {
+          "version": "1.1.0",
+          "pubDate": "Sat, 22 Oct 2022 01:41:03 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "kl.dk.fhir.core",
+      "name": "kl.dk.fhir.core",
+      "description": "",
+      "url": "https://packages.simplifier.net/kl.dk.fhir.core/1.2.0",
+      "Author": "Martijn Harthoorn",
+      "fhir_version": "4",
+      "Latest_Version": "1.2.0",
+      "version_count": 1,
+      "all_versions": [
+        {
+          "version": "1.2.0",
+          "pubDate": "Tue, 08 Aug 2023 12:02:09 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "nictiz.fhir.nl.r4.nl-core",
+      "name": "nictiz.fhir.nl.r4.nl-core",
+      "description": "",
+      "url": "https://packages.simplifier.net/nictiz.fhir.nl.r4.nl-core/0.11.0-beta.1",
+      "Author": "Nictiz",
+      "fhir_version": "4",
+      "Latest_Version": "0.11.0-beta.1",
+      "version_count": 7,
+      "all_versions": [
+        {
+          "version": "0.5.0-beta1",
+          "pubDate": "Wed, 15 Jun 2022 13:25:04 GMT"
+        },
+        {
+          "version": "0.10.0-beta.1",
+          "pubDate": "Thu, 19 Oct 2023 09:21:46 GMT"
+        },
+        {
+          "version": "0.11.0-beta.1",
+          "pubDate": "Thu, 17 Oct 2024 10:51:47 GMT"
+        },
+        {
+          "version": "0.8.0-beta.1",
+          "pubDate": "Thu, 16 Feb 2023 14:07:38 GMT"
+        },
+        {
+          "version": "0.7.0-beta.1",
+          "pubDate": "Mon, 21 Nov 2022 20:06:29 GMT"
+        },
+        {
+          "version": "0.9.0-beta.1",
+          "pubDate": "Mon, 01 May 2023 10:52:27 GMT"
+        },
+        {
+          "version": "0.6.0-beta.2",
+          "pubDate": "Fri, 26 Aug 2022 10:15:07 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "niph.go.jp.core",
+      "name": "niph.go.jp.core",
+      "description": "",
+      "url": "https://packages.simplifier.net/niph.go.jp.core/0.0.2",
+      "Author": "Eizen Kimura",
+      "fhir_version": "3",
+      "Latest_Version": "0.0.2",
+      "version_count": 2,
+      "all_versions": [
+        {
+          "version": "0.0.2",
+          "pubDate": "Thu, 27 Dec 2018 00:40:36 GMT"
+        },
+        {
+          "version": "0.0.1",
+          "pubDate": "Thu, 27 Dec 2018 00:08:13 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "OntarioContextManagement.core",
+      "name": "OntarioContextManagement.core",
+      "description": "",
+      "url": "https://packages.simplifier.net/OntarioContextManagement.core/0.1.0",
+      "Author": "Canadian FHIR Registry",
+      "fhir_version": "4",
+      "Latest_Version": "0.1.0",
+      "version_count": 1,
+      "all_versions": [
+        {
+          "version": "0.1.0",
+          "pubDate": "Mon, 15 Mar 2021 17:49:02 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "PCR.Core.STU3",
+      "name": "PCR.Core.STU3",
+      "description": "",
+      "url": "https://packages.simplifier.net/PCR.Core.STU3/1.0.1",
+      "Author": "Canadian FHIR Registry",
+      "fhir_version": "3",
+      "Latest_Version": "1.0.1",
+      "version_count": 2,
+      "all_versions": [
+        {
+          "version": "1.0.0",
+          "pubDate": "Wed, 31 Jul 2019 14:46:37 GMT"
+        },
+        {
+          "version": "1.0.1",
+          "pubDate": "Tue, 20 Aug 2019 18:29:30 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "portuguese.core.guide",
+      "name": "portuguese.core.guide",
+      "description": "",
+      "url": "https://packages.simplifier.net/portuguese.core.guide/1.0.0",
+      "Author": "Sara Russo",
+      "fhir_version": "4",
+      "Latest_Version": "1.0.0",
+      "version_count": 1,
+      "all_versions": [
+        {
+          "version": "1.0.0",
+          "pubDate": "Fri, 29 Nov 2024 12:49:43 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "ProvincialClientRegi.core",
+      "name": "ProvincialClientRegi.core",
+      "description": "",
+      "url": "https://packages.simplifier.net/ProvincialClientRegi.core/1.0.1",
+      "Author": "Super Administrator",
+      "fhir_version": "3",
+      "Latest_Version": "1.0.1",
+      "version_count": 2,
+      "all_versions": [
+        {
+          "version": "1.0.1",
+          "pubDate": "Wed, 14 Nov 2018 14:30:12 GMT"
+        },
+        {
+          "version": "1.0.0",
+          "pubDate": "Fri, 09 Nov 2018 19:47:58 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "rki.demis.r4.core",
+      "name": "rki.demis.r4.core",
+      "description": "",
+      "url": "https://packages.simplifier.net/rki.demis.r4.core/1.23.2",
+      "Author": "Michaela Diercke",
+      "fhir_version": "4",
+      "Latest_Version": "1.23.2",
+      "version_count": 6,
+      "all_versions": [
+        {
+          "version": "1.22.2",
+          "pubDate": "Wed, 25 Jan 2023 10:39:50 GMT"
+        },
+        {
+          "version": "1.20.0",
+          "pubDate": "Wed, 08 Dec 2021 12:59:43 GMT"
+        },
+        {
+          "version": "1.23.1",
+          "pubDate": "Thu, 29 Jun 2023 15:45:36 GMT"
+        },
+        {
+          "version": "1.22.0",
+          "pubDate": "Thu, 12 May 2022 11:37:35 GMT"
+        },
+        {
+          "version": "1.23.2",
+          "pubDate": "Fri, 28 Jul 2023 09:56:24 GMT"
+        },
+        {
+          "version": "1.21.0",
+          "pubDate": "Fri, 10 Dec 2021 19:56:15 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "signal.core.r4",
+      "name": "signal.core.r4",
+      "description": "",
+      "url": "https://packages.simplifier.net/signal.core.r4/0.2.10",
+      "Author": "Matt Zajack",
+      "fhir_version": "4",
+      "Latest_Version": "0.2.10",
+      "version_count": 15,
+      "all_versions": [
+        {
+          "version": "0.1.4",
+          "pubDate": "Wed, 16 Aug 2023 15:40:05 GMT"
+        },
+        {
+          "version": "0.2.4",
+          "pubDate": "Wed, 11 Oct 2023 20:39:39 GMT"
+        },
+        {
+          "version": "0.2.5",
+          "pubDate": "Wed, 08 Nov 2023 15:07:00 GMT"
+        },
+        {
+          "version": "0.2.3",
+          "pubDate": "Wed, 04 Oct 2023 16:57:43 GMT"
+        },
+        {
+          "version": "0.2.2",
+          "pubDate": "Wed, 04 Oct 2023 16:53:42 GMT"
+        },
+        {
+          "version": "0.2.1",
+          "pubDate": "Wed, 04 Oct 2023 16:47:51 GMT"
+        },
+        {
+          "version": "0.1.1-beta-1",
+          "pubDate": "Tue, 27 Jun 2023 14:07:15 GMT"
+        },
+        {
+          "version": "0.2.0",
+          "pubDate": "Tue, 19 Sep 2023 14:30:05 GMT"
+        },
+        {
+          "version": "0.2.7",
+          "pubDate": "Tue, 12 Dec 2023 07:53:41 GMT"
+        },
+        {
+          "version": "0.2.8",
+          "pubDate": "Tue, 02 Jan 2024 13:00:03 GMT"
+        },
+        {
+          "version": "0.1.2-preview-20230628",
+          "pubDate": "Thu, 29 Jun 2023 04:08:48 GMT"
+        },
+        {
+          "version": "0.2.10",
+          "pubDate": "Mon, 30 Sep 2024 08:42:10 GMT"
+        },
+        {
+          "version": "0.2.6",
+          "pubDate": "Mon, 13 Nov 2023 20:08:31 GMT"
+        },
+        {
+          "version": "0.2.9",
+          "pubDate": "Fri, 21 Jun 2024 10:47:11 GMT"
+        },
+        {
+          "version": "0.1.3-preview-20230707",
+          "pubDate": "Fri, 07 Jul 2023 16:28:28 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "smart4health.eu.core",
+      "name": "smart4health.eu.core",
+      "description": "",
+      "url": "https://packages.simplifier.net/smart4health.eu.core/0.5.2",
+      "Author": "Pablo Guerrero",
+      "fhir_version": "4",
+      "Latest_Version": "0.5.2",
+      "version_count": 10,
+      "all_versions": [
+        {
+          "version": "0.1.1",
+          "pubDate": "Wed, 24 Feb 2021 12:35:14 GMT"
+        },
+        {
+          "version": "0.5.0",
+          "pubDate": "Wed, 18 May 2022 06:26:47 GMT"
+        },
+        {
+          "version": "0.1.0",
+          "pubDate": "Wed, 17 Feb 2021 16:06:28 GMT"
+        },
+        {
+          "version": "0.3.0",
+          "pubDate": "Wed, 09 Jun 2021 10:40:25 GMT"
+        },
+        {
+          "version": "0.2.2",
+          "pubDate": "Tue, 27 Apr 2021 15:16:04 GMT"
+        },
+        {
+          "version": "0.2.1",
+          "pubDate": "Tue, 27 Apr 2021 15:14:23 GMT"
+        },
+        {
+          "version": "0.2.0",
+          "pubDate": "Tue, 27 Apr 2021 08:36:52 GMT"
+        },
+        {
+          "version": "0.4.0",
+          "pubDate": "Tue, 14 Sep 2021 12:45:26 GMT"
+        },
+        {
+          "version": "0.5.2",
+          "pubDate": "Mon, 13 Jun 2022 06:49:11 GMT"
+        },
+        {
+          "version": "0.5.1",
+          "pubDate": "Fri, 10 Jun 2022 10:56:00 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "tewhatuora.hip-core",
+      "name": "tewhatuora.hip-core",
+      "description": "",
+      "url": "https://fhir-ig.digital.health.nz/archive/HIP-FHIR-Common/v1.9.2/package.tgz",
+      "Author": "Health New Zealand Te Whatu Ora",
+      "fhir_version": "4",
+      "Latest_Version": "1.9.2",
+      "version_count": 3,
+      "all_versions": [
+        {
+          "version": "1.9.2",
+          "pubDate": "Tue, 22 Oct 2024 03:36:45 +0000"
+        },
+        {
+          "version": "1.9.1",
+          "pubDate": "Tue, 22 Oct 2024 00:44:30 +0000"
+        },
+        {
+          "version": "1.9.0",
+          "pubDate": "Thu, 05 Sep 2024 03:55:01 +0000"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "Touchstone-ereferralontario.core",
+      "name": "Touchstone-ereferralontario.core",
+      "description": "",
+      "url": "https://packages.simplifier.net/Touchstone-ereferralontario.core/0.1.1-beta",
+      "Author": "Canadian FHIR Registry",
+      "fhir_version": "4",
+      "Latest_Version": "0.1.1-beta",
+      "version_count": 2,
+      "all_versions": [
+        {
+          "version": "0.1.1-beta",
+          "pubDate": "Wed, 17 Nov 2021 17:11:57 GMT"
+        },
+        {
+          "version": "0.1.0-beta",
+          "pubDate": "Wed, 17 Nov 2021 16:57:48 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "tw.gov.mohw.twcore",
+      "name": "tw.gov.mohw.twcore",
+      "description": "",
+      "url": "https://packages.simplifier.net/tw.gov.mohw.twcore/0.3.2",
+      "Author": "Martijn Harthoorn",
+      "fhir_version": "4",
+      "Latest_Version": "0.3.2",
+      "version_count": 8,
+      "all_versions": [
+        {
+          "version": "0.2.2",
+          "pubDate": "Wed, 29 May 2024 06:02:05 GMT"
+        },
+        {
+          "version": "0.3.0",
+          "pubDate": "Wed, 16 Oct 2024 12:02:19 GMT"
+        },
+        {
+          "version": "0.2.1",
+          "pubDate": "Wed, 10 Apr 2024 06:02:03 GMT"
+        },
+        {
+          "version": "0.3.1",
+          "pubDate": "Tue, 22 Oct 2024 06:02:54 GMT"
+        },
+        {
+          "version": "0.1.1",
+          "pubDate": "Thu, 31 Aug 2023 06:02:36 GMT"
+        },
+        {
+          "version": "0.2.0",
+          "pubDate": "Thu, 21 Mar 2024 06:10:56 GMT"
+        },
+        {
+          "version": "0.1.0",
+          "pubDate": "Thu, 06 Jul 2023 12:03:01 GMT"
+        },
+        {
+          "version": "0.3.2",
+          "pubDate": "Fri, 13 Dec 2024 06:02:51 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "ufp.core",
+      "name": "ufp.core",
+      "description": "",
+      "url": "https://packages.simplifier.net/ufp.core/0.6.0",
+      "Author": "Simone Heckmann",
+      "fhir_version": "4",
+      "Latest_Version": "0.6.0",
+      "version_count": 6,
+      "all_versions": [
+        {
+          "version": "0.5.1",
+          "pubDate": "Wed, 29 Apr 2020 08:35:57 GMT"
+        },
+        {
+          "version": "0.3.0",
+          "pubDate": "Wed, 09 Jan 2019 09:43:19 GMT"
+        },
+        {
+          "version": "0.4.0",
+          "pubDate": "Thu, 22 Aug 2019 06:52:33 GMT"
+        },
+        {
+          "version": "0.2.0",
+          "pubDate": "Thu, 13 Dec 2018 14:48:49 GMT"
+        },
+        {
+          "version": "0.1.0",
+          "pubDate": "Sat, 29 Sep 2018 19:00:54 GMT"
+        },
+        {
+          "version": "0.6.0",
+          "pubDate": "Mon, 30 Jan 2023 12:50:00 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "vzvz.fhir.nl-vzvz-core",
+      "name": "vzvz.fhir.nl-vzvz-core",
+      "description": "",
+      "url": "https://packages.simplifier.net/vzvz.fhir.nl-vzvz-core/0.3.2",
+      "Author": "Tom de Jong",
+      "fhir_version": "4",
+      "Latest_Version": "0.3.2",
+      "version_count": 5,
+      "all_versions": [
+        {
+          "version": "0.2.2",
+          "pubDate": "Tue, 28 Jan 2025 11:12:30 GMT"
+        },
+        {
+          "version": "0.3.0",
+          "pubDate": "Tue, 04 Mar 2025 16:40:03 GMT"
+        },
+        {
+          "version": "0.3.2",
+          "pubDate": "Thu, 24 Apr 2025 10:53:33 GMT"
+        },
+        {
+          "version": "0.3.1",
+          "pubDate": "Thu, 24 Apr 2025 07:58:52 GMT"
+        },
+        {
+          "version": "0.2.1",
+          "pubDate": "Fri, 29 Nov 2024 13:57:48 GMT"
+        }
+      ],
+      "relevance": 1.5
+    },
+    {
+      "id": "vzvz.fhir.nl-vzvz-core-stu3",
+      "name": "vzvz.fhir.nl-vzvz-core-stu3",
+      "description": "",
+      "url": "https://packages.simplifier.net/vzvz.fhir.nl-vzvz-core-stu3/1.0.0-beta-2",
+      "Author": "Helma van der Linden",
+      "fhir_version": "3",
+      "Latest_Version": "1.0.0-beta-2",
+      "version_count": 2,
+      "all_versions": [
+        {
+          "version": "1.0.0-beta-2",
+          "pubDate": "Wed, 12 Feb 2025 14:04:50 GMT"
+        },
+        {
+          "version": "1.0.0-beta-1",
+          "pubDate": "Wed, 12 Feb 2025 10:58:16 GMT"
+        }
+      ],
+      "relevance": 1.5
+    }
+  ],
+  "total": 76,
+  "last_cached_timestamp": "2025-05-12T09:29:55.653596",
+  "fetch_failed": false,
+  "is_fetching": false
+}
