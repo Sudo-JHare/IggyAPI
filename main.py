@@ -748,7 +748,7 @@ async def get_profile(ig_id: str, profile_id: str, version: Optional[str] = None
     Args:
         ig_id (str): The ID of the Implementation Guide (e.g., 'hl7.fhir.au.core' or 'hl7.fhir.au.core#1.1.0-preview').
                      If the version is included in the ig_id (after '#'), it takes precedence unless overridden by the version parameter.
-        profile_id (str): The ID or name of the profile to retrieve (e.g., 'AUCorePatient').
+        profile_id (str): The ID or name of the profile to retrieve (e.g., 'AUCorePatient' or 'DAV_PR_ERP_Abrechnungszeilen').
         version (str, optional): The version of the IG (e.g., '1.1.0-preview'). If not provided and ig_id contains a version,
                                  the version from ig_id is used; otherwise, the latest version is used.
         include_narrative (bool, optional): Whether to include the narrative (`text` element) in the StructureDefinition.
@@ -802,15 +802,24 @@ async def get_profile(ig_id: str, profile_id: str, version: Optional[str] = None
     # Check if profiles are cached
     cache_key = f"{ig_name}#{version if version else 'latest'}"
     if cache_key in app_config["PROFILE_CACHE"]:
-        logger.info(f"Using cached profiles for IG {ig_name} (version: {version if version else 'latest'})")
+        logger.info(f"Cache hit for IG {ig_name} (version: {version if version else 'latest'})")
         profiles = app_config["PROFILE_CACHE"][cache_key]
+        logger.debug(f"Cached profiles: {[profile.name for profile in profiles]}")
+        profile_found = False
+        # Normalize profile_id for matching (remove hyphens, underscores, and convert to lowercase)
+        normalized_profile_id = profile_id.lower().replace('-', '').replace('_', '')
         for profile in profiles:
-            if profile.name == profile_id or profile.url.endswith(profile_id):
+            normalized_name = profile.name.lower().replace('-', '').replace('_', '') if profile.name else ''
+            normalized_url_end = profile.url.lower().split('/')[-1].replace('-', '').replace('_', '') if profile.url else ''
+            if normalized_name == normalized_profile_id or normalized_url_end == normalized_profile_id:
+                logger.info(f"Found profile {profile_id} in cached profiles: name={profile.name}, url={profile.url}")
+                profile_found = True
                 break
-        else:
+        if not profile_found:
             logger.error(f"Profile {profile_id} not found in cached profiles for IG {ig_name} (version: {version if version else 'latest'})")
             raise HTTPException(status_code=404, detail=f"Profile '{profile_id}' not found in IG '{ig_name}' (version: {version if version else 'latest'}).")
     else:
+        logger.info(f"Cache miss for IG {ig_name} (version: {version if version else 'latest'}), calling list_profiles")
         profiles = await list_profiles(ig_id, version)
 
     # Fetch package metadata
@@ -844,7 +853,15 @@ async def get_profile(ig_id: str, profile_id: str, version: Optional[str] = None
         version = target_version
         logger.info(f"No version specified, using latest version: {target_version}")
 
+    # Check directory state before calling download_package
+    instance_dir = "instance"
+    if os.path.exists(instance_dir):
+        logger.info(f"Directory {instance_dir} exists before calling download_package in get_profile")
+    else:
+        logger.warning(f"Directory {instance_dir} does NOT exist before calling download_package in get_profile")
+
     # Download the package
+    logger.info(f"Calling download_package for IG {ig_name} (version: {version}) in get_profile")
     tgz_path, error = download_package(ig_name, version, package)
     if not tgz_path:
         logger.error(f"Failed to download package for IG {ig_name} (version: {version}): {error}")
@@ -856,6 +873,8 @@ async def get_profile(ig_id: str, profile_id: str, version: Optional[str] = None
     profile_resource = None
     try:
         with tarfile.open(tgz_path, mode="r:gz") as tar:
+            # Normalize profile_id for matching (remove hyphens, underscores, and convert to lowercase)
+            normalized_profile_id = profile_id.lower().replace('-', '').replace('_', '')
             for member in tar.getmembers():
                 if member.name.endswith('.json'):  # Check all JSON files
                     logger.debug(f"Processing file: {member.name}")
@@ -865,10 +884,15 @@ async def get_profile(ig_id: str, profile_id: str, version: Optional[str] = None
                             resource = json.load(f)
                             # Check if the resource is a StructureDefinition
                             if resource.get("resourceType") == "StructureDefinition":
-                                logger.debug(f"Found StructureDefinition in file: {member.name}")
                                 resource_name = resource.get("name", "")
                                 resource_url = resource.get("url", "")
-                                if resource_name == profile_id or resource_url.endswith(profile_id):
+                                # Normalize name and URL for matching
+                                normalized_name = resource_name.lower().replace('-', '').replace('_', '') if resource_name else ''
+                                normalized_url_end = resource_url.lower().split('/')[-1].replace('-', '').replace('_', '') if resource_url else ''
+                                logger.debug(f"Found StructureDefinition in file: {member.name}, name={resource_name}, url={resource_url}, normalized_name={normalized_name}, normalized_url_end={normalized_url_end}")
+                                # Match profile_id against name or the last segment of the URL
+                                if normalized_name == normalized_profile_id or normalized_url_end == normalized_profile_id:
+                                    logger.info(f"Matched profile {profile_id} in file {member.name}: name={resource_name}, url={resource_url}")
                                     profile_resource = resource
                                     break
                             else:
@@ -892,7 +916,6 @@ async def get_profile(ig_id: str, profile_id: str, version: Optional[str] = None
 
     logger.info(f"Successfully retrieved profile {profile_id} for IG {ig_name} (version: {version})")
     return StructureDefinition(resource=profile_resource)
-
 @app.get("/status", response_model=RefreshStatus)
 async def get_refresh_status():
     """Get the status of the last cache refresh."""
