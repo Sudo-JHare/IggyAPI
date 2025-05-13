@@ -381,7 +381,106 @@ async def search_igs(query: str = '', search_type: str = 'semantic'):
     finally:
         db.close()
         logger.info("Closed database session after search")
+#-----------------------------------------------------------------------------OLD
+# @app.get("/igs/{ig_id}/profiles", response_model=List[ProfileMetadata])
+# async def list_profiles(ig_id: str, version: Optional[str] = None):
+#     """List StructureDefinition profiles in the specified IG, optionally for a specific version."""
+#     logger.info(f"Listing profiles for IG: {ig_id}, version: {version}")
 
+#     # Parse ig_id for version if it includes a '#'
+#     ig_name = ig_id
+#     if '#' in ig_id:
+#         parts = ig_id.split('#', 1)
+#         ig_name = parts[0]
+#         if version and parts[1] != version:
+#             logger.warning(f"Version specified in ig_id ({parts[1]}) conflicts with version parameter ({version}). Using version parameter.")
+#         else:
+#             version = parts[1]
+#         logger.info(f"Parsed ig_id: name={ig_name}, version={version}")
+
+#     # Validate ig_name
+#     if not ig_name or not re.match(r'^[a-zA-Z0-9\.\-_]+$', ig_name):
+#         logger.error(f"Invalid IG name: {ig_name}")
+#         raise HTTPException(status_code=400, detail="Invalid IG name. Use format like 'hl7.fhir.au.core'.")
+
+#     # Validate version if provided
+#     if version and not re.match(r'^[a-zA-Z0-9\.\-_]+$', version):
+#         logger.error(f"Invalid version: {version}")
+#         raise HTTPException(status_code=400, detail="Invalid version format. Use format like '1.1.0-preview'.")
+
+#     # Check if profiles are cached
+#     cache_key = f"{ig_name}#{version if version else 'latest'}"
+#     if cache_key in app_config["PROFILE_CACHE"]:
+#         logger.info(f"Returning cached profiles for IG {ig_name} (version: {version if version else 'latest'})")
+#         return app_config["PROFILE_CACHE"][cache_key]
+
+#     # Fetch package metadata from cache
+#     packages = app_config["MANUAL_PACKAGE_CACHE"]
+#     if not packages:
+#         logger.error("Package cache is empty. Please refresh the cache using /refresh-cache.")
+#         raise HTTPException(status_code=500, detail="Package cache is empty. Please refresh the cache.")
+
+#     # Find the package
+#     package = None
+#     for pkg in packages:
+#         if pkg['package_name'].lower() == ig_name.lower():
+#             package = pkg
+#             break
+
+#     if not package:
+#         logger.error(f"IG {ig_name} not found in cached packages.")
+#         raise HTTPException(status_code=404, detail=f"IG '{ig_name}' not found.")
+
+#     # Determine the version to fetch
+#     if version:
+#         target_version = None
+#         for ver_entry in package['all_versions']:
+#             if ver_entry['version'] == version:
+#                 target_version = ver_entry['version']
+#                 break
+#         if not target_version:
+#             logger.error(f"Version {version} not found for IG {ig_name}.")
+#             raise HTTPException(status_code=404, detail=f"Version '{version}' not found for IG '{ig_name}'.")
+#     else:
+#         target_version = package['latest_version']
+#         version = target_version
+#         logger.info(f"No version specified, using latest version: {target_version}")
+
+#     # Download the package
+#     tgz_path, error = download_package(ig_name, version, package)
+#     if not tgz_path:
+#         logger.error(f"Failed to download package for IG {ig_name} (version: {version}): {error}")
+#         if "404" in error:
+#             raise HTTPException(status_code=404, detail=f"Package for IG '{ig_name}' (version: {version}) not found.")
+#         raise HTTPException(status_code=500, detail=f"Failed to fetch package: {error}")
+
+#     # Extract profiles from the .tgz file
+#     profiles = []
+#     try:
+#         with tarfile.open(tgz_path, mode="r:gz") as tar:
+#             for member in tar.getmembers():
+#                 if member.name.endswith('.json') and 'StructureDefinition' in member.name:
+#                     f = tar.extractfile(member)
+#                     if f:
+#                         resource = json.load(f)
+#                         if resource.get("resourceType") == "StructureDefinition":
+#                             profiles.append(ProfileMetadata(
+#                                 name=resource.get("name", ""),
+#                                 description=resource.get("description"),
+#                                 version=resource.get("version"),
+#                                 url=resource.get("url", "")
+#                             ))
+#     except Exception as e:
+#         logger.error(f"Failed to extract profiles from package for IG {ig_name} (version: {version}): {str(e)}")
+#         raise HTTPException(status_code=500, detail=f"Failed to extract profiles: {str(e)}")
+
+#     # Cache the profiles
+#     app_config["PROFILE_CACHE"][cache_key] = profiles
+#     logger.info(f"Cached {len(profiles)} profiles for IG {ig_name} (version: {version})")
+
+#     logger.info(f"Found {len(profiles)} profiles in IG {ig_name} (version: {version})")
+#     return profiles
+#----------------------------------------------------------------------------end
 @app.get("/igs/{ig_id}/profiles", response_model=List[ProfileMetadata])
 async def list_profiles(ig_id: str, version: Optional[str] = None):
     """List StructureDefinition profiles in the specified IG, optionally for a specific version."""
@@ -459,17 +558,27 @@ async def list_profiles(ig_id: str, version: Optional[str] = None):
     try:
         with tarfile.open(tgz_path, mode="r:gz") as tar:
             for member in tar.getmembers():
-                if member.name.endswith('.json') and 'StructureDefinition' in member.name:
+                if member.name.endswith('.json'):  # Check all JSON files
+                    logger.debug(f"Processing file: {member.name}")
                     f = tar.extractfile(member)
                     if f:
-                        resource = json.load(f)
-                        if resource.get("resourceType") == "StructureDefinition":
-                            profiles.append(ProfileMetadata(
-                                name=resource.get("name", ""),
-                                description=resource.get("description"),
-                                version=resource.get("version"),
-                                url=resource.get("url", "")
-                            ))
+                        try:
+                            resource = json.load(f)
+                            # Check if the resource is a StructureDefinition
+                            if resource.get("resourceType") == "StructureDefinition":
+                                logger.debug(f"Found StructureDefinition in file: {member.name}")
+                                profiles.append(ProfileMetadata(
+                                    name=resource.get("name", ""),
+                                    description=resource.get("description"),
+                                    version=resource.get("version"),
+                                    url=resource.get("url", "")
+                                ))
+                            else:
+                                logger.debug(f"File {member.name} is not a StructureDefinition, resourceType: {resource.get('resourceType', 'unknown')}")
+                        except json.JSONDecodeError as e:
+                            logger.warning(f"Failed to parse JSON in file {member.name}: {str(e)}")
+                        except Exception as e:
+                            logger.warning(f"Error processing file {member.name}: {str(e)}")
     except Exception as e:
         logger.error(f"Failed to extract profiles from package for IG {ig_name} (version: {version}): {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to extract profiles: {str(e)}")
